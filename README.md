@@ -1,0 +1,2 @@
+# Blog
+Thomitics's Blog.
