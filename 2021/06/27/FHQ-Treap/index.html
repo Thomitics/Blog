@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FHQ-Treap | Thomitics</title><meta name="keywords" content="数据结构"><meta name="author" content="Thomitics"><meta name="copyright" content="Thomitics"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="关于一种非旋随机化平衡树——FHQ-Treap。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FHQ-Treap">
+<meta property="og:url" content="https://blog.foxex.cn/2021/06/27/FHQ-Treap/index.html">
+<meta property="og:site_name" content="Thomitics">
+<meta property="og:description" content="关于一种非旋随机化平衡树——FHQ-Treap。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg">
+<meta property="article:published_time" content="2021-06-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-05T11:49:59.758Z">
+<meta property="article:author" content="Thomitics">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg"><link rel="canonical" href="https://blog.foxex.cn/2021/06/27/FHQ-Treap/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/blog@master/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-EFRKKVE2KE"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-EFRKKVE2KE');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"这篇文章已经","messageNext":"天没有更新了，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FHQ-Treap',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-05 19:49:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="referrer" content="never"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/iconfont.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/plugins.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/macblack.css"><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/ban.js"></script><body οncοpy="alert('对不起，本网页禁止复制！');return false;"><noscript><iframe src="*.htm"></iframe></noscript><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://api.dujin.org/bing/1920.php')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Thomitics</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">FHQ-Treap<a class="post-edit-link" href="https://github.com/thomitics/HexoG/edit/master/source/_posts/FHQ-Treap.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-06-27T16:00:00.000Z" title="发表于 2021-06-28 00:00:00">2021-06-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-05T11:49:59.758Z" title="更新于 2021-07-05 19:49:59">2021-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="FHQ-Treap"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/06/27/FHQ-Treap/#post-comment"><span id="twikoo-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇博客我自认为写的非常清楚，不需要$\text任何基础$，只要会<code>C++</code>语言基础即可学懂。</p>
+<p>任何一个地方我都没有默认已经学过了，完全从<code>0</code>开始的$\text FHQ-Treap$教学！</p>
+<p>好耶！我们开始吧！ヽ(✿ﾟ▽ﾟ)ノ</p>
+<p>哒哒哒哒哒！</p>
+<h2 id="FHQ-Treap"><a href="#FHQ-Treap" class="headerlink" title="FHQ-Treap"></a>FHQ-Treap</h2><p>FHQ-Treap是一种平衡树。名字里带有<code>Treap</code>，他的确与<code>Treap</code>有一些相同的性质。比如，他与<code>Treap</code>一样，通过随机权值来保证平衡。</p>
+<p>可是，众所周知，<code>Treap</code>是一种通过旋转来维护平衡的平衡树。</p>
+<p>范浩强(FHQ)说过这样一句话：</p>
+<p>$\text{Think functional.}$</p>
+<p>$\text{—–FHQ}$</p>
+<p>这句话是什么意思呢？</p>
+<p>如果不明白，可以看<a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/a5f6fefe0066f5335a8121fa.html">这篇文章</a>以获得一些启发。</p>
+<p>既然要$\text{Think functional}$，自然就不能使用旋转操作了。</p>
+<p>于是，通过拆开与合并来维护平衡的<code>FHQ-Treap</code>就诞生了。</p>
+<h2 id="主要操作"><a href="#主要操作" class="headerlink" title="主要操作"></a>主要操作</h2><h3 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> lch, rch; <span class="comment">//左孩子，右孩子</span></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> siz;<span class="comment">//子树大小</span></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> val;<span class="comment">//这个点的权值</span></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> rnd;<span class="comment">//随机权值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成随机权值"><a href="#生成随机权值" class="headerlink" title="生成随机权值"></a>生成随机权值</h3><p>想不到吧，这个都会讲！就是这么细！</p>
+<p>首先为了让权值随机，我们需要初始化种子。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">srand(time(<span class="literal">NULL</span>));</span><br></pre></td></tr></table></figure>
+
+<p>但是这里要注意的是，初始化种子只需要初始化一次，生成的数就是随机的了，多次初始化反而会导致总是生成同一个数。</p>
+<p>Linux下生成的随机数比较大，我们不需要那么大的，可以取个模。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rnd = rand() % <span class="number">114514</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="拆分"><a href="#拆分" class="headerlink" title="拆分"></a>拆分</h3><p>拆分操作，就是把一棵树拆成两棵，以在两棵树中间进行一些操作。</p>
+<p>设定一个$K$，然后把比$K$小或者等于$K$的放在左侧，其余在右侧。</p>
+<p>如图：</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://t10.baidu.com/it/u=2972804439,2749805413&fm=173&app=25&f=JPEG?w=381&h=229&s=6DA2147283964DC00A7905CF000050B2">
+
+<p>代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">split</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX, <span class="keyword">long</span> <span class="keyword">long</span> K, <span class="keyword">long</span> <span class="keyword">long</span> &amp;Xtree, <span class="keyword">long</span> <span class="keyword">long</span> &amp;Ytree)</span></span></span><br><span class="line"><span class="function"><span class="comment">//nowX是目前正在分裂的节点，K就是K，Xtree和Ytree分别是分裂后的两棵树。</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!nowX)</span><br><span class="line">	&#123;</span><br><span class="line">		Xtree = Ytree = <span class="number">0</span>; <span class="comment">//第一次分裂，先初始化</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (nodes[nowX].val &lt;= K)</span><br><span class="line">		&#123;</span><br><span class="line">			Xtree = nowX; <span class="comment">//将nowX归至X树</span></span><br><span class="line">			split(nodes[nowX].rch, K, nodes[nowX].rch, Ytree); <span class="comment">//向nowX右子树分裂</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			Ytree = nowX; <span class="comment">//将nowX归至Y树</span></span><br><span class="line">			split(nodes[nowX].lch, K, Xtree, nodes[nowX].lch); <span class="comment">//向nowX左子树分裂</span></span><br><span class="line">		&#125;</span><br><span class="line">		update(nowX);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h3><p>合并，就是拆分完操作完后再将树合并回去。</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://t10.baidu.com/it/u=2886283773,1160930284&fm=173&app=25&f=JPEG?w=477&h=246&s=69A034728FD768C01CDD48CF0000A0A2">
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">merge</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> Xtree,<span class="keyword">long</span> <span class="keyword">long</span> Ytree)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!Xtree||!Ytree)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> Xtree+Ytree; <span class="comment">//边界条件，返回有值的那一个</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(nodes[Xtree].rnd&lt;=nodes[Ytree].rnd)</span><br><span class="line">	&#123;</span><br><span class="line">		nodes[Xtree].rch=merge(nodes[Xtree].rch,Ytree);</span><br><span class="line">		update(Xtree);</span><br><span class="line">		retrun Xtree;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		nodes[Ytree].lch=merge(Ytree,nodes[Xtree].lch);</span><br><span class="line">		update(Ytree);</span><br><span class="line">		retrun Ytree;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>很显然，将要删除的数分裂出来之后不合并回去即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">del</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot,nowX,X,Z); <span class="comment">//先让nowX作为X树最大的，放在最后</span></span><br><span class="line">	split(X,nowX<span class="number">-1</span>,X,Y); <span class="comment">//X树中的所有nowX分到Y树中</span></span><br><span class="line">	Y=merge(nodes[nowX].lch,nodes[nowX].rch);<span class="comment">//Y树中全都是nowX，删除Y树根上那个nowX，其他nowX作为Y树</span></span><br><span class="line">	rot=merge(merge(X,Y),Z);<span class="comment">//三部分恢复为一棵树</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="排名第K的数"><a href="#排名第K的数" class="headerlink" title="排名第K的数"></a>排名第K的数</h3><p>常规做法。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">Kth</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX, <span class="keyword">long</span> <span class="keyword">long</span> K)</span> <span class="comment">//nowX为目前寻找的树根，K为要找的名次</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (K == nodes[nodes[nowX].lch].siz + <span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> nowX; <span class="comment">//好耶ヽ(✿ﾟ▽ﾟ)ノ！找到啦！（全~都可以炸完~）</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (K &gt; nodes[nodes[nowX].lch].siz + <span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			nowX = nodes[nowX].rch;				 <span class="comment">//emm……这个数太小了，应该找他的右边！走喽！（飞，比跑快吧！）</span></span><br><span class="line">			K -= nodes[nodes[nowX].lch].siz + <span class="number">1</span>; <span class="comment">//前面已经有这么多数了，应该减去！</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			nowX = nodes[nowX].lch; <span class="comment">//看来这个数有点大！那就去左面！（我可是蒙德城的飞行冠军！）</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="前驱"><a href="#前驱" class="headerlink" title="前驱"></a>前驱</h3><p>很显然，让要找的数成为Y树的第一个，然后X树最后一个即为前驱。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">pre</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot, nowX<span class="number">-1</span>, X, Y);</span><br><span class="line">	<span class="keyword">return</span> Kth(X, nodes[X].siz);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="后缀"><a href="#后缀" class="headerlink" title="后缀"></a>后缀</h3><p>同样思路，让要找的数成为X树的最后一个，然后Y树第一个即为前驱。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">nxt</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot, nowX, X, Y);</span><br><span class="line">	<span class="keyword">return</span> Kth(Y, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注意！"><a href="#注意！" class="headerlink" title="注意！"></a>注意！</h3><p>我们的前驱，后缀操作，都把树拆开了，调用后需要把X树和Y树复原回去。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> mrg() merge(X,Y)</span></span><br></pre></td></tr></table></figure>
+
+<p>还有，我们找点的操作，返回的都是节点编号，输出时需要翻译成节点权值。</p>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><p>好了，这就讲完了！是不是很轻松！</p>
+<p>你可别说不轻松哦（鍾城 曉）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 999999999</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> arand() rand() % 114514</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> mrg() rot = merge(X, Y)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">long</span> <span class="keyword">long</span> <span class="title">read</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> x = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> f = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">char</span> ch = getchar();</span><br><span class="line">	<span class="keyword">while</span> (ch &lt; <span class="string">&#x27;0&#x27;</span> || ch &gt; <span class="string">&#x27;9&#x27;</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (ch == <span class="string">&#x27;-&#x27;</span>)</span><br><span class="line">			f = <span class="number">-1</span>;</span><br><span class="line">		ch = getchar();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span> (ch &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; ch &lt;= <span class="string">&#x27;9&#x27;</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		x = (x &lt;&lt; <span class="number">1</span>) + (x &lt;&lt; <span class="number">3</span>) + (ch ^ <span class="number">48</span>);</span><br><span class="line">		ch = getchar();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> x * f;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">const</span> <span class="keyword">long</span> <span class="keyword">long</span> &amp;x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!x)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">putchar</span>(<span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">char</span> f[<span class="number">100</span>];</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> tmp = x;</span><br><span class="line">	<span class="keyword">if</span> (tmp &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		tmp = -tmp;</span><br><span class="line">		<span class="built_in">putchar</span>(<span class="string">&#x27;-&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> s = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (tmp &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		f[s++] = tmp % <span class="number">10</span> + <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">		tmp /= <span class="number">10</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span> (s &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">putchar</span>(f[--s]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">long</span> <span class="keyword">long</span> maxN = <span class="number">100090</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> lch, rch;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> val, siz;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> rnd;</span><br><span class="line">&#125; nodes[maxN];</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> X, Y, Z;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> rot;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> cnt;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> totN;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	nodes[nowX].siz = nodes[nodes[nowX].lch].siz + nodes[nodes[nowX].rch].siz + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">merge</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> Atree, <span class="keyword">long</span> <span class="keyword">long</span> Btree)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ((!Atree) || (!Btree))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> Atree + Btree;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (nodes[Atree].rnd &lt; nodes[Btree].rnd)</span><br><span class="line">	&#123;</span><br><span class="line">		nodes[Atree].rch = merge(nodes[Atree].rch, Btree);</span><br><span class="line">		update(Atree);</span><br><span class="line">		<span class="keyword">return</span> Atree;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		nodes[Btree].lch = merge(Atree, nodes[Btree].lch);</span><br><span class="line">		update(Btree);</span><br><span class="line">		<span class="keyword">return</span> Btree;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">split</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> splitX, <span class="keyword">long</span> <span class="keyword">long</span> K, <span class="keyword">long</span> <span class="keyword">long</span> &amp;Xtree, <span class="keyword">long</span> <span class="keyword">long</span> &amp;Ytree)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!splitX)</span><br><span class="line">	&#123;</span><br><span class="line">		Xtree = Ytree = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (nodes[splitX].val &lt;= K)</span><br><span class="line">		&#123;</span><br><span class="line">			Xtree = splitX;</span><br><span class="line">			split(nodes[splitX].rch, K, nodes[splitX].rch, Ytree);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			Ytree = splitX;</span><br><span class="line">			split(nodes[splitX].lch, K, Xtree, nodes[splitX].lch);</span><br><span class="line">		&#125;</span><br><span class="line">		update(splitX);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">Kth</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> KX, <span class="keyword">long</span> <span class="keyword">long</span> K)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (K &lt;= nodes[nodes[KX].lch].siz)</span><br><span class="line">		&#123;</span><br><span class="line">			KX = nodes[KX].lch;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (K == nodes[nodes[KX].lch].siz + <span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> KX;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			K -= nodes[nodes[KX].lch].siz + <span class="number">1</span>;</span><br><span class="line">			KX = nodes[KX].rch;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">del</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> delX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot, delX, X, Z);</span><br><span class="line">	split(X, delX - <span class="number">1</span>, X, Y);</span><br><span class="line">	Y = merge(nodes[Y].lch, nodes[Y].rch);</span><br><span class="line">	rot = merge(merge(X, Y), Z);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot, nowX, X, Y);</span><br><span class="line">	++cnt;</span><br><span class="line">	nodes[cnt].lch = nodes[cnt].rch = <span class="number">0</span>;</span><br><span class="line">	nodes[cnt].val = nowX;</span><br><span class="line">	nodes[cnt].siz = <span class="number">1</span>;</span><br><span class="line">	nodes[cnt].rnd = arand();</span><br><span class="line">	rot = merge(merge(X, cnt), Y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">pre</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot, nowX - <span class="number">1</span>, X, Y);</span><br><span class="line">	<span class="keyword">return</span> Kth(X, nodes[X].siz);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">nxt</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot, nowX, X, Y);</span><br><span class="line">	<span class="keyword">return</span> Kth(Y, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">thK</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> nowX)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	split(rot, nowX - <span class="number">1</span>, X, Y);</span><br><span class="line">	<span class="keyword">return</span> nodes[X].siz + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	totN = read();</span><br><span class="line">	<span class="keyword">int</span> readX, readY;</span><br><span class="line">	<span class="keyword">while</span> (totN--)</span><br><span class="line">	&#123;</span><br><span class="line">		readX = read();</span><br><span class="line">		readY = read();</span><br><span class="line">		<span class="keyword">if</span> (readX == <span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			insert(readY);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (readX == <span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			del(readY);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (readX == <span class="number">3</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			write(thK(readY));</span><br><span class="line">			<span class="built_in">putchar</span>(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">			mrg();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (readX == <span class="number">4</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			write(nodes[Kth(rot, readY)].val);</span><br><span class="line">			<span class="built_in">putchar</span>(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (readX == <span class="number">5</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			write(nodes[pre(readY)].val);</span><br><span class="line">			<span class="built_in">putchar</span>(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">			mrg();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (readX == <span class="number">6</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			write(nodes[nxt(readY)].val);</span><br><span class="line">			<span class="built_in">putchar</span>(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">			mrg();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problemnew/show/P3369">普通平衡树</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problemnew/show/P3391">文艺平衡树</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problemnew/show/P2596">书架</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3987">我永远喜欢珂朵莉~</a></li>
+</ul>
+<p>顺便热烈庆祝停课！</p>
+<p>好耶！ヽ(✿ﾟ▽ﾟ)ノ</p>
+<p>还有</p>
+<p>祝贺微软推出新一代操作系统$\text{Windows 11}$。</p>
+<p>从此，<code>x86</code>与<code>ARM</code>对峙正式形成！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Thomitics</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.foxex.cn/2021/06/27/FHQ-Treap/">https://blog.foxex.cn/2021/06/27/FHQ-Treap/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.foxex.cn" target="_blank">Thomitics</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></div><div class="post_share"><div class="social-share" data-image="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/28/OI-problems/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1fodqi3sqatj312z0svu0x.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">OI经典题目</div></div></a></div><div class="next-post pull-right"><a href="/2021/06/10/Z-function/"><img class="next-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkjcneg1j31kw0w0hbs.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Z函数（扩展 KMP）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/01/15/关于SBT平衡树/" title="关于SBT平衡树"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tva1.sinaimg.cn/large/9bd9b167ly1fwsfzt2p29j21hc0u04qp.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-15</div><div class="title">关于SBT平衡树</div></div></a></div><div><a href="/2021/04/30/ODT/" title="珂朵莉树"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/v2-dab9afe9114971ed82c27e5516af35b8_720w.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-01</div><div class="title">珂朵莉树</div></div></a></div><div><a href="/2021/05/03/Treeflow/" title="树状数组"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax2.sinaimg.cn/large/0072Vf1pgy1foxkg2posaj31hc0u0x01.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-04</div><div class="title">树状数组</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Thomitics</div><div class="author-info__description">Nothing Last Forever.</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/thomitics"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/thomitics" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:likiblaze@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/LikiBlaze/" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a><a class="social-icon" href="https://twitter.com/BlazeLiki" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a><a class="social-icon" href="tencent://message/?uin=2188955531&amp;Site=&amp;Menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://www.zhihu.com/people/likiblaze" target="_blank" title=""><i class="iconfont  icon-zhihu2"></i></a><a class="social-icon" href="https://space.bilibili.com/13164198" target="_blank" title=""><i class="iconfont  icon-bilibili1"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FHQ-Treap"><span class="toc-number">2.</span> <span class="toc-text">FHQ-Treap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%93%8D%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">主要操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93"><span class="toc-number">3.1.</span> <span class="toc-text">结构体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%9D%83%E5%80%BC"><span class="toc-number">3.2.</span> <span class="toc-text">生成随机权值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%86%E5%88%86"><span class="toc-number">3.3.</span> <span class="toc-text">拆分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E5%B9%B6"><span class="toc-number">3.4.</span> <span class="toc-text">合并</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4"><span class="toc-number">3.5.</span> <span class="toc-text">删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%92%E5%90%8D%E7%AC%ACK%E7%9A%84%E6%95%B0"><span class="toc-number">3.6.</span> <span class="toc-text">排名第K的数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E9%A9%B1"><span class="toc-number">3.7.</span> <span class="toc-text">前驱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E7%BC%80"><span class="toc-number">3.8.</span> <span class="toc-text">后缀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%EF%BC%81"><span class="toc-number">3.9.</span> <span class="toc-text">注意！</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">完整代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0"><span class="toc-number">5.</span> <span class="toc-text">练习</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/P2717/" title="P2717题解"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxlhjn4x1j31hc0u04fr.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="P2717题解"/></a><div class="content"><a class="title" href="/2021/06/28/P2717/" title="P2717题解">P2717题解</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/EdisonBa/" title="OI模板"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkibab1zj31hc0u0dy7.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI模板"/></a><div class="content"><a class="title" href="/2021/06/28/EdisonBa/" title="OI模板">OI模板</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/OI-problems/" title="OI经典题目"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1fodqi3sqatj312z0svu0x.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI经典题目"/></a><div class="content"><a class="title" href="/2021/06/28/OI-problems/" title="OI经典题目">OI经典题目</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="FHQ-Treap"/></a><div class="content"><a class="title" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap">FHQ-Treap</a><time datetime="2021-06-27T16:00:00.000Z" title="发表于 2021-06-28 00:00:00">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkjcneg1j31kw0w0hbs.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="Z函数（扩展 KMP）"/></a><div class="content"><a class="title" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）">Z函数（扩展 KMP）</a><time datetime="2021-06-10T16:00:00.000Z" title="发表于 2021-06-11 00:00:00">2021-06-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Thomitics</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">本网站由<a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io/images/又拍云_logo6.png"></a>提供CDN/云储存服务</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/utils.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/main.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'twikoo-9gkusr5330416ede',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'twikoo-9gkusr5330416ede',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'eAr0DeReLqljfxB66UTeW7Dc-gzGzoHsz',
+      appKey: 'QtQxNqMWsCyRgID89dz0Sy97',
+      placeholder: '讨论一下？',
+      avatar: 'monsterid',
+      meta: 'nick,mail'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: true,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+      requiredFields: ["nick"],
+      visitor: true
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/17cde96a.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '17cde96a',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (false) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>关于筛法 | Thomitics</title><meta name="keywords" content="数论"><meta name="author" content="Thomitics"><meta name="copyright" content="Thomitics"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="关于筛法及其优化。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于筛法">
+<meta property="og:url" content="https://blog.foxex.cn/2021/02/25/%E5%85%B3%E4%BA%8E%E7%AD%9B%E6%B3%95/index.html">
+<meta property="og:site_name" content="Thomitics">
+<meta property="og:description" content="关于筛法及其优化。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tvax1.sinaimg.cn/large/0072Vf1pgy1foxlnwff9mj31hc0u07mi.jpg">
+<meta property="article:published_time" content="2021-02-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-05T11:49:59.762Z">
+<meta property="article:author" content="Thomitics">
+<meta property="article:tag" content="数论">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tvax1.sinaimg.cn/large/0072Vf1pgy1foxlnwff9mj31hc0u07mi.jpg"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg"><link rel="canonical" href="https://blog.foxex.cn/2021/02/25/%E5%85%B3%E4%BA%8E%E7%AD%9B%E6%B3%95/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/blog@master/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-EFRKKVE2KE"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-EFRKKVE2KE');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"这篇文章已经","messageNext":"天没有更新了，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '关于筛法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-05 19:49:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="referrer" content="never"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/iconfont.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/plugins.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/macblack.css"><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/ban.js"></script><body οncοpy="alert('对不起，本网页禁止复制！');return false;"><noscript><iframe src="*.htm"></iframe></noscript><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://tvax1.sinaimg.cn/large/0072Vf1pgy1foxlnwff9mj31hc0u07mi.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Thomitics</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">关于筛法<a class="post-edit-link" href="https://github.com/thomitics/HexoG/edit/master/source/_posts/关于筛法.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-02-25T16:00:00.000Z" title="发表于 2021-02-26 00:00:00">2021-02-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-05T11:49:59.762Z" title="更新于 2021-07-05 19:49:59">2021-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E8%AE%BA/">数论</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="关于筛法"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/02/25/%E5%85%B3%E4%BA%8E%E7%AD%9B%E6%B3%95/#post-comment"><span id="twikoo-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="什么是筛法？"><a href="#什么是筛法？" class="headerlink" title="什么是筛法？"></a>什么是筛法？</h2><p>筛法的直接用途是用来解决寻找$1~N$中的质数的问题的。<br>也常用来间接解决一些其他的数论问题。</p>
+<h2 id="最简单的筛法：艾氏筛法"><a href="#最简单的筛法：艾氏筛法" class="headerlink" title="最简单的筛法：艾氏筛法"></a>最简单的筛法：艾氏筛法</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>艾氏筛法是比较直接就能想到的一种筛法。<br>每找到一个质数，就用它来筛掉后面所有它的倍数。<br>这样每找到一个没有被筛掉的数，由于前面所有比他小的数都不是它的因数，所以它一定是一个质数。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>代码也很容易实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">eratosthenes</span><span class="params">(<span class="keyword">int</span> upperbound)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; <span class="title">flag</span><span class="params">(upperbound + <span class="number">1</span>, <span class="literal">true</span>)</span></span>;</span><br><span class="line">  flag[<span class="number">0</span>] = flag[<span class="number">1</span>] = <span class="literal">false</span>; <span class="comment">//exclude 0 and 1</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= <span class="built_in">sqrt</span>(upperbound); ++i) </span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> (flag[i]) </span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> j = i * i; j &lt;= upperbound; j += i)</span><br><span class="line">      &#123;</span><br><span class="line">        flag[j] = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它的复杂度是$O(nloglogn)$。</p>
+<h2 id="欧拉筛法"><a href="#欧拉筛法" class="headerlink" title="欧拉筛法"></a>欧拉筛法</h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>上面的筛法虽然复杂度已经很低了，但是我们仍然需要一种更加快速的筛法。</p>
+<p>很明显，我们上一个算法不够迅速的原因是有的数字被筛了多次。如果能避免这种情况，我们的算法就会更快。</p>
+<p>欧拉筛法可以保证范围内的每个合数都被删掉（在 bool 数组里面标记为非素数），而且任一合数只被：</p>
+<p><strong>“最小质因数 × 最大因数（非自己） = 这个合数”</strong></p>
+<p>的途径删掉。由于每个数只被筛一次，时间复杂度为 O(n)。</p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><p>先上代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> isPrime[<span class="number">100000010</span>];</span><br><span class="line"><span class="comment">//isPrime[i] == 1表示：i是素数</span></span><br><span class="line"><span class="keyword">int</span> Prime[<span class="number">6000010</span>], cnt = <span class="number">0</span>;</span><br><span class="line"><span class="comment">//Prime存质数</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GetPrime</span><span class="params">(<span class="keyword">int</span> n)</span><span class="comment">//筛到n</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(isPrime, <span class="number">1</span>, <span class="keyword">sizeof</span>(isPrime));</span><br><span class="line">    <span class="comment">//以“每个数都是素数”为初始状态，逐个删去</span></span><br><span class="line">    isPrime[<span class="number">1</span>] = <span class="number">0</span>;<span class="comment">//1不是素数</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(isPrime[i])<span class="comment">//没筛掉 </span></span><br><span class="line">            Prime[++cnt] = i; <span class="comment">//i成为下一个素数</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= cnt &amp;&amp; i*Prime[j] &lt;= n<span class="comment">/*不超上限*/</span>; j++) </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//从Prime[1]，即最小质数2开始，逐个枚举已知的质数，并期望Prime[j]是(i*Prime[j])的最小质因数</span></span><br><span class="line">            <span class="comment">//当然，i肯定比Prime[j]大，因为Prime[j]是在i之前得出的</span></span><br><span class="line">            isPrime[i*Prime[j]] = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span>(i % Prime[j] == <span class="number">0</span>)<span class="comment">//i中也含有Prime[j]这个因子</span></span><br><span class="line">                <span class="keyword">break</span>; <span class="comment">//重要步骤。见原理</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, q;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d %d&quot;</span>, &amp;n, &amp;q);</span><br><span class="line">    GetPrime(n);</span><br><span class="line">    <span class="keyword">while</span> (q--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> k;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;k);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, Prime[k]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h3><p>容易发现，这份代码和刚才的那种筛法主要的区别就在于</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(i % Prime[j] == <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+
+<p>为什么？</p>
+<p>刚才说到过，我们只想让一个数的最大因数筛掉这个数。</p>
+<p>模拟一下这个程序：</p>
+<table>
+<thead>
+<tr>
+<th>当前用于筛素数的数i</th>
+<th>被i筛掉的数</th>
+<th>被i筛掉的数</th>
+<th>被i筛掉的数</th>
+<th>被i筛掉的数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2</td>
+<td>2 * 2=4</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>3 * 2=6</td>
+<td>3 * 3=9</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>4 * 2=8</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>5 * 2=10</td>
+<td>5 * 3=15</td>
+<td>5 * 5=25</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>6 * 2=12</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>7 * 2=14</td>
+<td>7 * 3=21</td>
+<td>7 * 5=35</td>
+<td>7 * 7=49</td>
+</tr>
+<tr>
+<td>8</td>
+<td>8 * 2=16</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td>9 * 2=18</td>
+<td>9 * 3=27</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>10 * 2=20</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>这就达到了预期，让一个数的最大因数筛掉这个数。</p>
+<p>为什么呢？</p>
+<p>素数表<code>prime</code>中已有两个素数：2和3。</p>
+<p>此时在<code>check</code>数组中已经被标记为1的数（合数）是：4、6、9。</p>
+<p>因为$i=4$已经被标记为1，所以我们不将4添加进素数表<code>prime</code>。</p>
+<p>此时执行 j 循环：</p>
+<p>因为素数表<code>prime</code>中有2和3，所以预计将要被筛掉的数是$4×2=8$ 和 $4×3=12$。</p>
+<p>当$4×2=8$被筛掉以后，经过 $i%prime[j]=0$ 判断可以知道$4%2=0$， 此时应结束 j 循环，不再筛 $4×3=12$。</p>
+<p>我们都知道12的最大因数（非自身，下同）是6，因此12应该被6筛掉，那么上述判断的原理是什么呢？</p>
+<p>因为当出现 $i%prime[j]=0$ 的情况时，意味着$prime[j]$ 是 i 的一个因数（2是4的一个因数）。</p>
+<p>既然4是12的因数，2又是4的因数，所以2也是12的因数。</p>
+<p>由此可以知道，4不是12的最大因数，12的最大因数会在后面出现，即2所对应的6，12将会在i=6时被筛掉。</p>
+<p>同理可以判断：9是45的因数，3又是9的因数，所以3也是45的因数，9不是45的最大因数，45的最大因数将会在后面出现，即3所对应的15，45将会在$i=15$时被筛掉。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Thomitics</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.foxex.cn/2021/02/25/%E5%85%B3%E4%BA%8E%E7%AD%9B%E6%B3%95/">https://blog.foxex.cn/2021/02/25/%E5%85%B3%E4%BA%8E%E7%AD%9B%E6%B3%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.foxex.cn" target="_blank">Thomitics</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E8%AE%BA/">数论</a></div><div class="post_share"><div class="social-share" data-image="https://tvax1.sinaimg.cn/large/0072Vf1pgy1foxlnwff9mj31hc0u07mi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/04/30/ODT/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/v2-dab9afe9114971ed82c27e5516af35b8_720w.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">珂朵莉树</div></div></a></div><div class="next-post pull-right"><a href="/2021/02/25/%E5%9B%9B%E8%BE%B9%E5%BD%A2%E4%B8%8D%E7%AD%89%E5%BC%8F/"><img class="next-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax1.sinaimg.cn/large/0072Vf1pgy1foxlhj08c1j31kw0w0x2j.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">四边形不等式</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/03/08/2020年3月8日NOIP课程知识整理/" title="2020年3月8日NOIP课程知识整理"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://acg.xydwz.cn/api/api.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-03-09</div><div class="title">2020年3月8日NOIP课程知识整理</div></div></a></div><div><a href="/2020/01/29/P1553数字反转（升级版)/" title="P1553数字反转（升级版)"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://api.r10086.com/%E5%8A%A8%E6%BC%AB%E7%BB%BC%E5%90%884.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-30</div><div class="title">P1553数字反转（升级版)</div></div></a></div><div><a href="/2020/01/18/一本通题库1058：求一元二次方程/" title="一本通题库1058：求一元二次方程"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://api.r10086.com/%E5%8A%A8%E6%BC%AB%E7%BB%BC%E5%90%8813.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-19</div><div class="title">一本通题库1058：求一元二次方程</div></div></a></div><div><a href="/2020/01/26/关于C++读入数字按位取出与进制转换问题/" title="关于C++读入数字按位取出与进制转换问题"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://api.r10086.com/%E5%8A%A8%E6%BC%AB%E7%BB%BC%E5%90%887.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-27</div><div class="title">关于C++读入数字按位取出与进制转换问题</div></div></a></div><div><a href="/2020/02/05/洛谷P1217USACO1.5回文质数PrimePalindromes/" title="洛谷P1217USACO1.5回文质数PrimePalindromes"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://api.r10086.com/%E5%8A%A8%E6%BC%AB%E7%BB%BC%E5%90%889.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-02-06</div><div class="title">洛谷P1217USACO1.5回文质数PrimePalindromes</div></div></a></div><div><a href="/2020/03/14/莫比乌斯反演/" title="莫比乌斯反演"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://api.r10086.com/%E5%8A%A8%E6%BC%AB%E7%BB%BC%E5%90%889.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-03-15</div><div class="title">莫比乌斯反演</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Thomitics</div><div class="author-info__description">Nothing Last Forever.</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/thomitics"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/thomitics" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:likiblaze@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/LikiBlaze/" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a><a class="social-icon" href="https://twitter.com/BlazeLiki" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a><a class="social-icon" href="tencent://message/?uin=2188955531&amp;Site=&amp;Menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://www.zhihu.com/people/likiblaze" target="_blank" title=""><i class="iconfont  icon-zhihu2"></i></a><a class="social-icon" href="https://space.bilibili.com/13164198" target="_blank" title=""><i class="iconfont  icon-bilibili1"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%AD%9B%E6%B3%95%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是筛法？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E7%AD%9B%E6%B3%95%EF%BC%9A%E8%89%BE%E6%B0%8F%E7%AD%9B%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">最简单的筛法：艾氏筛法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">2.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">2.2.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AC%A7%E6%8B%89%E7%AD%9B%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">欧拉筛法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="toc-number">3.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="toc-number">3.2.</span> <span class="toc-text">代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A"><span class="toc-number">3.3.</span> <span class="toc-text">解释</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/P2717/" title="P2717题解"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxlhjn4x1j31hc0u04fr.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="P2717题解"/></a><div class="content"><a class="title" href="/2021/06/28/P2717/" title="P2717题解">P2717题解</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/EdisonBa/" title="OI模板"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkibab1zj31hc0u0dy7.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI模板"/></a><div class="content"><a class="title" href="/2021/06/28/EdisonBa/" title="OI模板">OI模板</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/OI-problems/" title="OI经典题目"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1fodqi3sqatj312z0svu0x.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI经典题目"/></a><div class="content"><a class="title" href="/2021/06/28/OI-problems/" title="OI经典题目">OI经典题目</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="FHQ-Treap"/></a><div class="content"><a class="title" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap">FHQ-Treap</a><time datetime="2021-06-27T16:00:00.000Z" title="发表于 2021-06-28 00:00:00">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkjcneg1j31kw0w0hbs.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="Z函数（扩展 KMP）"/></a><div class="content"><a class="title" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）">Z函数（扩展 KMP）</a><time datetime="2021-06-10T16:00:00.000Z" title="发表于 2021-06-11 00:00:00">2021-06-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Thomitics</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">本网站由<a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io/images/又拍云_logo6.png"></a>提供CDN/云储存服务</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/utils.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/main.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'twikoo-9gkusr5330416ede',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'twikoo-9gkusr5330416ede',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'eAr0DeReLqljfxB66UTeW7Dc-gzGzoHsz',
+      appKey: 'QtQxNqMWsCyRgID89dz0Sy97',
+      placeholder: '讨论一下？',
+      avatar: 'monsterid',
+      meta: 'nick,mail'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: true,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+      requiredFields: ["nick"],
+      visitor: true
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/17cde96a.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '17cde96a',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (false) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/busuanzi.pure.mini.js"></script></div></body></html>

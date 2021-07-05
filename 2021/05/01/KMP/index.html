@@ -1,0 +1,393 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KMP算法 | Thomitics</title><meta name="keywords" content="字符串"><meta name="author" content="Thomitics"><meta name="copyright" content="Thomitics"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="关于一种简单的基础字符串匹配算法——KMP算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMP算法">
+<meta property="og:url" content="https://blog.foxex.cn/2021/05/01/KMP/index.html">
+<meta property="og:site_name" content="Thomitics">
+<meta property="og:description" content="关于一种简单的基础字符串匹配算法——KMP算法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/%E7%8E%89%E6%89%89%E7%BB%95%E5%B0%98%E6%AD%8C-2048x1536.jpg">
+<meta property="article:published_time" content="2021-05-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-05T11:49:59.758Z">
+<meta property="article:author" content="Thomitics">
+<meta property="article:tag" content="字符串">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/%E7%8E%89%E6%89%89%E7%BB%95%E5%B0%98%E6%AD%8C-2048x1536.jpg"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg"><link rel="canonical" href="https://blog.foxex.cn/2021/05/01/KMP/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/blog@master/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-EFRKKVE2KE"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-EFRKKVE2KE');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"这篇文章已经","messageNext":"天没有更新了，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'KMP算法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-05 19:49:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="referrer" content="never"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/iconfont.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/plugins.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/macblack.css"><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/ban.js"></script><body οncοpy="alert('对不起，本网页禁止复制！');return false;"><noscript><iframe src="*.htm"></iframe></noscript><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/%E7%8E%89%E6%89%89%E7%BB%95%E5%B0%98%E6%AD%8C-2048x1536.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Thomitics</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">KMP算法<a class="post-edit-link" href="https://github.com/thomitics/HexoG/edit/master/source/_posts/KMP.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-05-01T16:00:00.000Z" title="发表于 2021-05-02 00:00:00">2021-05-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-05T11:49:59.758Z" title="更新于 2021-07-05 19:49:59">2021-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="KMP算法"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/05/01/KMP/#post-comment"><span id="twikoo-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前置知识：字符串前缀树组"><a href="#前置知识：字符串前缀树组" class="headerlink" title="前置知识：字符串前缀树组"></a>前置知识：字符串前缀树组</h2><h2 id="前缀函数定义"><a href="#前缀函数定义" class="headerlink" title="前缀函数定义"></a>前缀函数定义</h2><p>给定一个长度为 $n$ 的字符串 $s$，其 <strong>前缀函数</strong> 被定义为一个长度为 $n$ 的数组 $\pi$。<br>其中 $\pi[i]$ 的定义是：</p>
+<ol>
+<li>如果子串 $s[0\dots i]$ 有一对相等的真前缀与真后缀：$s[0\dots k-1]$ 和 $s[i - (k - 1) \dots i]$，那么 $\pi[i]$ 就是这个相等的真前缀（或者真后缀，因为它们相等：)）的长度，也就是 $\pi[i]=k$；</li>
+<li>如果不止有一对相等的，那么 $\pi[i]$ 就是其中最长的那一对的长度；</li>
+<li>如果没有相等的，那么 $\pi[i]=0$。</li>
+</ol>
+<p>简单来说 $\pi[i]$ 就是，子串 $s[0\dots i]$ 最长的相等的真前缀与真后缀的长度。</p>
+<p>用数学语言描述如下：</p>
+<p>$$<br>\pi[i] = \max_{k = 0 \dots i}{k: s[0 \dots k - 1] = s[i - (k - 1) \dots i]}<br>$$</p>
+<p>特别地，规定 $\pi[0]=0$。</p>
+<p>举例来说，对于字符串 <code>abcabcd</code>，</p>
+<p>$\pi[0]=0$，因为 <code>a</code> 没有真前缀和真后缀，根据规定为 0</p>
+<p>$\pi[1]=0$，因为 <code>ab</code> 无相等的真前缀和真后缀</p>
+<p>$\pi[2]=0$，因为 <code>abc</code> 无相等的真前缀和真后缀</p>
+<p>$\pi[3]=1$，因为 <code>abca</code> 只有一对相等的真前缀和真后缀：<code>a</code>，长度为 1</p>
+<p>$\pi[4]=2$，因为 <code>abcab</code> 相等的真前缀和真后缀只有 <code>ab</code>，长度为 2</p>
+<p>$\pi[5]=3$，因为 <code>abcabc</code> 相等的真前缀和真后缀只有 <code>abc</code>，长度为 3</p>
+<p>$\pi[6]=0$，因为 <code>abcabcd</code> 无相等的真前缀和真后缀</p>
+<p>同理可以计算字符串 <code>aabaaab</code> 的前缀函数为 $[0, 1, 0, 1, 2, 2, 3]$。</p>
+<h2 id="计算前缀函数的朴素算法"><a href="#计算前缀函数的朴素算法" class="headerlink" title="计算前缀函数的朴素算法"></a>计算前缀函数的朴素算法</h2><p>一个直接按照定义计算前缀函数的算法流程：</p>
+<ul>
+<li>在一个循环中以 $i = 1\to n - 1$ 的顺序计算前缀函数 $\pi[i]$ 的值（$\pi[0]$ 被赋值为 $0$）。</li>
+<li>为了计算当前的前缀函数值 $\pi[i]$，我们令变量 $j$ 从最大的真前缀长度 $i$ 开始尝试。</li>
+<li>如果当前长度下真前缀和真后缀相等，则此时长度为 $\pi[i]$，否则令 j 自减 1，继续匹配，直到 $j=0$。</li>
+<li>如果 $j = 0$ 并且仍没有任何一次匹配，则置 $\pi[i] = 0$ 并移至下一个下标 $i + 1$。</li>
+</ul>
+<p>具体实现如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">prefix_function</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = (<span class="keyword">int</span>)s.length();</span><br><span class="line">  <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">pi</span><span class="params">(n)</span></span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= <span class="number">0</span>; j--)</span><br><span class="line">      <span class="keyword">if</span> (s.substr(<span class="number">0</span>, j) == s.substr(i - j + <span class="number">1</span>, j)) &#123;</span><br><span class="line">        pi[i] = j;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  <span class="keyword">return</span> pi;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：</p>
+<ul>
+<li><code>string substr (size_t pos = 0, size_t len = npos) const;</code></li>
+</ul>
+<p>显见该算法的时间复杂度为 $O(n^3)$，具有很大的改进空间。</p>
+<h2 id="计算前缀函数的高效算法"><a href="#计算前缀函数的高效算法" class="headerlink" title="计算前缀函数的高效算法"></a>计算前缀函数的高效算法</h2><h3 id="第一个优化"><a href="#第一个优化" class="headerlink" title="第一个优化"></a>第一个优化</h3><p>第一个重要的观察是 <strong>相邻的前缀函数值至多增加 $1$</strong>。</p>
+<p>参照下图所示，只需如此考虑：当取一个尽可能大的 $\pi[i+1]$ 时，必然要求新增的 $s[i+1]$ 也与之对应的字符匹配，即 $s[i+1]=s[\pi[i]]$, 此时 $\pi[i+1] = \pi[i]+1$。</p>
+<p>$\underbrace{\overbrace{s_0 ~ s_1 ~ s_2}^{\pi[i] = 3} ~ s_3}<em>{\pi[i+1] = 4} ~ \dots ~ \underbrace{\overbrace{s</em>{i-2} ~ s_{i-1} ~ s_{i}}^{\pi[i] = 3} ~ s_{i+1}}_{\pi[i+1] = 4}<br>$</p>
+<p>所以当移动到下一个位置时，前缀函数的值要么增加一，要么维持不变，要么减少。</p>
+<p>此时的改进的算法为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">prefix_function</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = (<span class="keyword">int</span>)s.length();</span><br><span class="line">  <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">pi</span><span class="params">(n)</span></span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = pi[i - <span class="number">1</span>] + <span class="number">1</span>; j &gt;= <span class="number">0</span>; j--)  <span class="comment">// improved: j=i =&gt; j=pi[i-1]+1</span></span><br><span class="line">      <span class="keyword">if</span> (s.substr(<span class="number">0</span>, j) == s.substr(i - j + <span class="number">1</span>, j)) &#123;</span><br><span class="line">        pi[i] = j;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  <span class="keyword">return</span> pi;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个初步改进的算法中，在计算每个 $\pi[i]$ 时，最好的情况是第一次字符串比较就完成了匹配，也就是说基础的字符串比较次数是 <code>n-1</code> 次。</p>
+<p>而由于存在 <code>j = pi[i-1]+1</code>（<code>pi[0]=0</code>）对于最大字符串比较次数的限制，可以看出每次只有在最好情况才会为字符串比较次数的上限积累 1，而每次超过一次的字符串比较消耗的是之后次数的增长空间。</p>
+<p>由此我们可以得出字符串比较次数最多的一种情况：至少 <code>1</code> 次字符串比较次数的消耗和最多 <code>n-2</code> 次比较次数的积累，此时字符串比较次数为 <code>n-1 + n-2 = 2n-3</code>。</p>
+<p>可见经过此次优化，计算前缀函数只需要进行 $O(n)$ 次字符串比较，总复杂度降为了 $O(n^2)$。</p>
+<h3 id="第二个优化"><a href="#第二个优化" class="headerlink" title="第二个优化"></a>第二个优化</h3><p>在第一个优化中，我们讨论了计算 $\pi[i+1]$ 时的最好情况：$s[i+1]=s[\pi[i]]$，此时 $\pi[i+1] = \pi[i]+1$。现在让我们沿着这个思路走得更远一点：讨论当 $s[i+1] \neq s[\pi[i]]$ 时如何跳转。</p>
+<p>失配时，我们希望找到对于子串 $s[0\dots i]$，仅次于 $\pi[i]$ 的第二长度 $j$，使得在位置 $i$ 的前缀性质仍得以保持，也即 $s[0 \dots j - 1] = s[i - j + 1 \dots i]$：</p>
+<p>$$<br>\overbrace{\underbrace{s_0 ~ s_1}<em>j ~ s_2 ~ s_3}^{\pi[i]} ~ \dots ~ \overbrace{s</em>{i-3} ~ s_{i-2} ~ \underbrace{s_{i-1} ~ s_{i}}<em>j}^{\pi[i]} ~ s</em>{i+1}<br>$$</p>
+<p>如果我们找到了这样的长度 $j$，那么仅需要再次比较 $s[i + 1]$ 和 $s[j]$。如果它们相等，那么就有 $\pi[i + 1] = j + 1$。否则，我们需要找到子串 $s[0\dots i]$ 仅次于 $j$ 的第二长度 $j^{(2)}$，使得前缀性质得以保持，如此反复，直到 $j = 0$。如果 $s[i + 1] \neq s[0]$，则 $\pi[i + 1] = 0$。</p>
+<p>观察上图可以发现，因为 $s[0\dots \pi[i]-1] = s[i-\pi[i]+1\dots i]$，所以对于 $s[0\dots i]$ 的第二长度 $j$，有这样的性质：</p>
+<p>$$<br>s[0 \dots j - 1] = s[i - j + 1 \dots i]= s[\pi[i]-j\dots \pi[i]-1]<br>$$</p>
+<p>也就是说 $j$ 等价于子串 $s[\pi[i]-1]$ 的前缀函数值，即 $j=\pi[\pi[i]-1]$。同理，次于 $j$ 的第二长度等价于 $s[j-1]$ 的前缀函数值，$j^{(2)}=\pi[j-1]$</p>
+<p>显然我们可以得到一个关于 $j$ 的状态转移方程：$j^{(n)}=\pi[j^{(n-1)}-1], \ \ (j^{(n-1)}&gt;0)$</p>
+<h3 id="最终算法"><a href="#最终算法" class="headerlink" title="最终算法"></a>最终算法</h3><p>所以最终我们可以构建一个不需要进行任何字符串比较，并且只进行 $O(n)$ 次操作的算法。</p>
+<p>而且该算法的实现出人意料的短且直观：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">prefix_function</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = (<span class="keyword">int</span>)s.length();</span><br><span class="line">  <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">pi</span><span class="params">(n)</span></span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">    <span class="keyword">int</span> j = pi[i - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (j &gt; <span class="number">0</span> &amp;&amp; s[i] != s[j]) j = pi[j - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">if</span> (s[i] == s[j]) j++;</span><br><span class="line">    pi[i] = j;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> pi;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个 <strong>在线</strong> 算法，即其当数据到达时处理它——举例来说，你可以一个字符一个字符的读取字符串，立即处理它们以计算出每个字符的前缀函数值。该算法仍然需要存储字符串本身以及先前计算过的前缀函数值，但如果我们已经预先知道该字符串前缀函数的最大可能取值 $M$，那么我们仅需要存储该字符串的前 $M + 1$ 个字符以及对应的前缀函数值。</p>
+<h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><p>首先，默认大家字符串匹配的暴力算法（称作<code>Brute-Force</code>）是已经会了的。<br>它最坏的情况如下图所示：<br><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/v2-4fe5612ff13a6286e1a8e50a0b06cd96_r.jpg" alt=""><br>我们很难降低字符串比较的复杂度（因为比较两个字符串，真的只能逐个比较字符）。因此，我们考虑降低比较的趟数。如果比较的趟数能降到足够低，那么总的复杂度也将会下降很多。　　要优化一个算法，首先要回答的问题是“我手上有什么信息？”　我们手上的信息是否足够、是否有效，决定了我们能把算法优化到何种程度。请记住：<strong>尽可能利用残余的信息，是KMP算法的思想所在</strong>。</p>
+<p>　　在 Brute-Force 中，如果从 $S[i]$ 开始的那一趟比较失败了，算法会直接开始尝试从 $S[i+1]$ 开始比较。这种行为，属于典型的“没有从之前的错误中学到东西”。我们应当注意到，一次失败的匹配，会给我们提供宝贵的信息——如果 $S[i : i+len(P)]$ 与 $P$ 的匹配是在第 <code>r</code> 个位置失败的，那么从 $S[i]$ 开始的 <code>(r-1)</code> 个连续字符，一定与 P 的前 <code>(r-1)</code> 个字符一模一样！</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/v2-7dc61b0836af61e302d9474eeeecfe83_r.jpg" alt=""><br>需要实现的任务是“字符串匹配”，而每一次失败都会给我们换来一些信息——能告诉我们，主串的某一个子串等于模式串的某一个前缀。但是这又有什么用呢？</p>
+<h2 id="跳过不可能成功的字符串比较"><a href="#跳过不可能成功的字符串比较" class="headerlink" title="跳过不可能成功的字符串比较"></a>跳过不可能成功的字符串比较</h2><p>　　有些趟字符串比较是有可能会成功的；有些则毫无可能。我们刚刚提到过，优化 <code>Brute-Force</code> 的路线是“尽量减少比较的趟数”，而如果我们跳过那些绝不可能成功的字符串比较，则可以希望复杂度降低到能接受的范围。</p>
+<p>　　那么，哪些字符串比较是不可能成功的？来看一个例子。已知信息如下：</p>
+<p>模式串 P = “abcabd”.<br>和主串从$S[0]$开始匹配时，在 $P[5]$ 处失配。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/v2-372dc6c567ba53a1e4559fdb0cb6b206_r.jpg" alt=""></p>
+<p>　　首先，利用上一节的结论。既然是在 P[5] 失配的，那么说明 S[0:5] 等于 P[0:5]，即”abcab”. 现在我们来考虑：从 S[1]、S[2]、S[3] 开始的匹配尝试，有没有可能成功？<br>　　从 S[1] 开始肯定没办法成功，因为 S[1] = P[1] = ‘b’，和 P[0] 并不相等。从 S[2] 开始也是没戏的，因为 S[2] = P[2] = ‘c’，并不等于P[0]. 但是从 S[3] 开始是有可能成功的——至少按照已知的信息，我们推不出矛盾。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/v2-67dd66b86323d3d08f976589cf712a1a_r.jpg" alt=""></p>
+<h2 id="next数组"><a href="#next数组" class="headerlink" title="next数组"></a>next数组</h2><p>　　next数组是对于模式串而言的。P 的 next 数组定义为：next[i] 表示 P[0] ~ P[i] 这一个子串，使得 前k个字符恰等于后k个字符 的最大的k. 特别地，k不能取i+1（因为这个子串一共才 i+1 个字符，自己肯定与自己相等，就没有意义了）。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/v2-49c7168b5184cc1744459f325e426a4a_r.jpg" alt=""></p>
+<p>上图给出了一个例子。P=”abcabd”时，next[4]=2，这是因为P[0] ~ P[4] 这个子串是”abcab”，前两个字符与后两个字符相等，因此next[4]取2. 而next[5]=0，是因为”abcabd”找不到前缀与后缀相同，因此只能取0.</p>
+<p>　　如果把模式串视为一把标尺，在主串上移动，那么 Brute-Force 就是每次失配之后只右移一位；改进算法则是每次失配之后，移很多位，跳过那些不可能匹配成功的位置。但是该如何确定要移多少位呢？</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/v2-d6c6d433813595dce5aad08b40dc0b72_r.jpg" alt=""></p>
+<p>在 S[0] 尝试匹配，失配于 S[3] &lt;=&gt; P[3] 之后，我们直接把模式串往右移了两位，让 S[3] 对准 P[1]. 接着继续匹配，失配于 S[8] &lt;=&gt; P[6], 接下来我们把 P 往右平移了三位，把 S[8] 对准 P[3]. 此后继续匹配直到成功。<br>　　我们应该如何移动这把标尺？很明显，如图中蓝色箭头所示，旧的后缀要与新的前缀一致（如果不一致，那就肯定没法匹配上了）！</p>
+<p>　　回忆next数组的性质：P[0] 到 P[i] 这一段子串中，前next[i]个字符与后next[i]个字符一模一样。既然如此，如果失配在 P[r], 那么P[0]~P[r-1]这一段里面，前next[r-1]个字符恰好和后next[r-1]个字符相等——也就是说，我们可以拿长度为 next[r-1] 的那一段前缀，来顶替当前后缀的位置，让匹配继续下去！<br>　　您可以验证一下上面的匹配例子：P[3]失配后，把P[next[3-1]]也就是P[1]对准了主串刚刚失配的那一位；P[6]失配后，把P[next[6-1]]也就是P[3]对准了主串刚刚失配的那一位。</p>
+<p><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/v2-6ddb50d021e9fa660b5add8ea225383a_r.jpg" alt=""></p>
+<p>如上图所示，绿色部分是成功匹配，失配于红色部分。深绿色手绘线条标出了相等的前缀和后缀，其长度为next[右端]. 由于手绘线条部分的字符是一样的，所以直接把前面那条移到后面那条的位置。因此说，next数组为我们如何移动标尺提供了依据。接下来，我们实现这个优化的算法。</p>
+<p>而next数组的求法，我们前面已经讲过了，这里就不在赘述。</p>
+<h2 id="小练习"><a href="#小练习" class="headerlink" title="小练习"></a>小练习</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=396">UVA 455 “Periodic Strings”</a></li>
+<li><a target="_blank" rel="noopener" href="http://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1963">UVA 11022 “String Factoring”</a></li>
+<li><a target="_blank" rel="noopener" href="http://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=2447">UVA 11452 “Dancing the Cheeky-Cheeky”</a></li>
+<li><a target="_blank" rel="noopener" href="https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=4282">UVA 12604 - Caesar Cipher</a></li>
+<li><a target="_blank" rel="noopener" href="https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3911">UVA 12467 - Secret Word</a></li>
+<li><a target="_blank" rel="noopener" href="https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1960">UVA 11019 - Matrix Matcher</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.spoj.com/problems/NAJPF/">SPOJ - Pattern Find</a></li>
+<li><a target="_blank" rel="noopener" href="http://codeforces.com/contest/808/problem/G">Codeforces - Anthem of Berland</a></li>
+<li><a target="_blank" rel="noopener" href="http://codeforces.com/problemset/problem/471/D">Codeforces - MUH and Cube Walls</a></li>
+</ul>
+<p>好耶ヾ(✿ﾟ▽ﾟ)ノ！！！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Thomitics</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.foxex.cn/2021/05/01/KMP/">https://blog.foxex.cn/2021/05/01/KMP/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.foxex.cn" target="_blank">Thomitics</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/%E7%8E%89%E6%89%89%E7%BB%95%E5%B0%98%E6%AD%8C-2048x1536.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/05/03/Treeflow/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax2.sinaimg.cn/large/0072Vf1pgy1foxkg2posaj31hc0u0x01.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">树状数组</div></div></a></div><div class="next-post pull-right"><a href="/2021/04/30/ODT/"><img class="next-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/v2-dab9afe9114971ed82c27e5516af35b8_720w.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">珂朵莉树</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/05/16/57级返校测试-T3-成绩单/" title="57级返校测试-T3-成绩单"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax1.sinaimg.cn/large/0072Vf1pgy1foxkjjz8vbj31hc0u0k80.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-17</div><div class="title">57级返校测试-T3-成绩单</div></div></a></div><div><a href="/2020/01/29/P1553数字反转（升级版)/" title="P1553数字反转（升级版)"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://api.r10086.com/%E5%8A%A8%E6%BC%AB%E7%BB%BC%E5%90%884.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-30</div><div class="title">P1553数字反转（升级版)</div></div></a></div><div><a href="/2020/11/26/UOJ-T1-T15-题解/" title="UOJ T1~T15 题解"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxk3mu0ztj31hc0u07m5.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-26</div><div class="title">UOJ T1~T15 题解</div></div></a></div><div><a href="/2020/07/17/char-const-char-string的转换/" title="char*,const char*,string的转换"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax1.sinaimg.cn/large/0072Vf1pgy1foxkfz74phj31hc0u0qht.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-07-17</div><div class="title">char*,const char*,string的转换</div></div></a></div><div><a href="/2020/01/29/总结一下当前阶段我认为比较常用的字符串操作/" title="总结一下当前阶段我认为比较常用的字符串操作"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://api.r10086.com/%E5%8A%A8%E6%BC%AB%E7%BB%BC%E5%90%8814.php" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-01-30</div><div class="title">总结一下当前阶段我认为比较常用的字符串操作</div></div></a></div><div><a href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkjcneg1j31kw0w0hbs.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-11</div><div class="title">Z函数（扩展 KMP）</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Thomitics</div><div class="author-info__description">Nothing Last Forever.</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/thomitics"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/thomitics" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:likiblaze@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/LikiBlaze/" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a><a class="social-icon" href="https://twitter.com/BlazeLiki" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a><a class="social-icon" href="tencent://message/?uin=2188955531&amp;Site=&amp;Menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://www.zhihu.com/people/likiblaze" target="_blank" title=""><i class="iconfont  icon-zhihu2"></i></a><a class="social-icon" href="https://space.bilibili.com/13164198" target="_blank" title=""><i class="iconfont  icon-bilibili1"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%89%8D%E7%BC%80%E6%A0%91%E7%BB%84"><span class="toc-number">1.</span> <span class="toc-text">前置知识：字符串前缀树组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BC%80%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89"><span class="toc-number">2.</span> <span class="toc-text">前缀函数定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%89%8D%E7%BC%80%E5%87%BD%E6%95%B0%E7%9A%84%E6%9C%B4%E7%B4%A0%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">计算前缀函数的朴素算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%89%8D%E7%BC%80%E5%87%BD%E6%95%B0%E7%9A%84%E9%AB%98%E6%95%88%E7%AE%97%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">计算前缀函数的高效算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%BC%98%E5%8C%96"><span class="toc-number">4.1.</span> <span class="toc-text">第一个优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA%E4%BC%98%E5%8C%96"><span class="toc-number">4.2.</span> <span class="toc-text">第二个优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E7%AE%97%E6%B3%95"><span class="toc-number">4.3.</span> <span class="toc-text">最终算法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KMP%E7%AE%97%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">KMP算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%B3%E8%BF%87%E4%B8%8D%E5%8F%AF%E8%83%BD%E6%88%90%E5%8A%9F%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%AF%94%E8%BE%83"><span class="toc-number">6.</span> <span class="toc-text">跳过不可能成功的字符串比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#next%E6%95%B0%E7%BB%84"><span class="toc-number">7.</span> <span class="toc-text">next数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%83%E4%B9%A0"><span class="toc-number">8.</span> <span class="toc-text">小练习</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/P2717/" title="P2717题解"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxlhjn4x1j31hc0u04fr.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="P2717题解"/></a><div class="content"><a class="title" href="/2021/06/28/P2717/" title="P2717题解">P2717题解</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/EdisonBa/" title="OI模板"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkibab1zj31hc0u0dy7.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI模板"/></a><div class="content"><a class="title" href="/2021/06/28/EdisonBa/" title="OI模板">OI模板</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/OI-problems/" title="OI经典题目"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1fodqi3sqatj312z0svu0x.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI经典题目"/></a><div class="content"><a class="title" href="/2021/06/28/OI-problems/" title="OI经典题目">OI经典题目</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="FHQ-Treap"/></a><div class="content"><a class="title" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap">FHQ-Treap</a><time datetime="2021-06-27T16:00:00.000Z" title="发表于 2021-06-28 00:00:00">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkjcneg1j31kw0w0hbs.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="Z函数（扩展 KMP）"/></a><div class="content"><a class="title" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）">Z函数（扩展 KMP）</a><time datetime="2021-06-10T16:00:00.000Z" title="发表于 2021-06-11 00:00:00">2021-06-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Thomitics</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">本网站由<a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io/images/又拍云_logo6.png"></a>提供CDN/云储存服务</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/utils.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/main.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'twikoo-9gkusr5330416ede',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'twikoo-9gkusr5330416ede',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'eAr0DeReLqljfxB66UTeW7Dc-gzGzoHsz',
+      appKey: 'QtQxNqMWsCyRgID89dz0Sy97',
+      placeholder: '讨论一下？',
+      avatar: 'monsterid',
+      meta: 'nick,mail'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: true,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+      requiredFields: ["nick"],
+      visitor: true
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/17cde96a.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '17cde96a',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (false) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/busuanzi.pure.mini.js"></script></div></body></html>

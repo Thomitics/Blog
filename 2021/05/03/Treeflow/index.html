@@ -1,0 +1,1157 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>树状数组 | Thomitics</title><meta name="keywords" content="数据结构"><meta name="author" content="Thomitics"><meta name="copyright" content="Thomitics"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="关于一种简单的数据结构——树状数组。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树状数组">
+<meta property="og:url" content="https://blog.foxex.cn/2021/05/03/Treeflow/index.html">
+<meta property="og:site_name" content="Thomitics">
+<meta property="og:description" content="关于一种简单的数据结构——树状数组。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tvax2.sinaimg.cn/large/0072Vf1pgy1foxkg2posaj31hc0u0x01.jpg">
+<meta property="article:published_time" content="2021-05-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-05T11:49:59.762Z">
+<meta property="article:author" content="Thomitics">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tvax2.sinaimg.cn/large/0072Vf1pgy1foxkg2posaj31hc0u0x01.jpg"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg"><link rel="canonical" href="https://blog.foxex.cn/2021/05/03/Treeflow/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/blog@master/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-EFRKKVE2KE"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-EFRKKVE2KE');
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"这篇文章已经","messageNext":"天没有更新了，文章内容可能已经过时。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '树状数组',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-05 19:49:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="referrer" content="never"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/iconfont.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/plugins.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/macblack.css"><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/ban.js"></script><body οncοpy="alert('对不起，本网页禁止复制！');return false;"><noscript><iframe src="*.htm"></iframe></noscript><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://tvax2.sinaimg.cn/large/0072Vf1pgy1foxkg2posaj31hc0u0x01.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Thomitics</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/Music"><i class="fa-fw /music/"></i><span> 0</span></a></li><li><a class="site-page child" href="/Movie"><i class="fa-fw /movies/"></i><span> 1</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/2020/07/11/About/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">树状数组<a class="post-edit-link" href="https://github.com/thomitics/HexoG/edit/master/source/_posts/Treeflow.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-05-03T16:00:00.000Z" title="发表于 2021-05-04 00:00:00">2021-05-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-05T11:49:59.762Z" title="更新于 2021-07-05 19:49:59">2021-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">7.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>33分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="树状数组"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/05/03/Treeflow/#post-comment"><span id="twikoo-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>前言</h1>
+树状数组，又称二叉索引树，是一种代码简单，应用广泛的神奇数据结构！今天我来带大家详细的了解一下这个神奇的数据结构！！！超级详细，不看后悔哦！
+
+<p>话不多说，我们开始内容！</p>
+<h1>普通树状数组</h1>
+<h2><strong>概念普及：树状数组的原理</strong></h2>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/rjksv5dw.png" alt="" />
+设黑色框内数组为 $A[1]\to A[8]$
+
+<p>那么可以得到以下式子：</p>
+<p>$C[1] = A[1];$</p>
+<p>$C[2] = A[1] + A[2];$</p>
+<p>$C[3] = A[3];$</p>
+<p>$C[4] = A[1] + A[2] + A[3] + A[4];$</p>
+<p>$C[5] = A[5];$</p>
+<p>$C[6] = A[5] + A[6];$</p>
+<p>$C[7] = A[7];$</p>
+<p>$C[8] = A[1] + A[2] + A[3] + A[4] + A[5] + A[6] + A[7] + A[8];$</p>
+<p>我们便可以得到 $C[i] = A[i - 2^k+1] + A[i - 2^k+2] + … + A[i];$</p>
+<p>在这里， $k$为 $i$的二进制中从最低位到高位连续零的长度</p>
+<p>那么，如何求出二进制中从最低位到高位连续零的长度呢？</p>
+<p>我们需要找最低位的1！！！</p>
+<p>如何找最低位的1呢？</p>
+<p>我们需要引入<strong>lowbit</strong></p>
+<p><strong>lowbit</strong> </p>
+<pre><code class="language-cpp">inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;</code></pre>
+<p>&amp;运算，即与运算，即按位比较都是1则为1，否则为0。<br><strong>lowbit的原理简单说一下：</strong><br>在计算机中二进制是以补码存储的。对于 $x(x&gt;0)$,他的补码就是他的本身.<br>而 $[−x]补为[x]$补连同符号位取反加一之后的结果<br>所以[-x]补&amp;[x]补刚好就是最低位1的结果<br><strong>总结一下规律</strong>：x&amp;(-x)，当x为0时结果为0；x为奇数时，结果为1；x为偶数时，结果为x中2的最大次方的因子。用处呢就是<strong>找最低位的1的位置。</strong><br>那么我们树状数组的雏形就搭建好了，看看几个基础函数的用法吧。<br>（其实我们发现，树状数组其实就是个特殊的前缀和数组！）<br><strong>add</strong></p>
+<pre><code class="language-cpp">inline void adds(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    t[i]+=y;
+    return ;
+&#125;</code></pre>
+<p><strong>query</strong></p>
+<pre><code class="language-cpp">inline int query(int x)
+&#123;
+    int tot=0;
+    for(fint i=x;i;i-=lowbit(i))
+    tot+=t[i];
+    return tot;
+&#125;</code></pre>
+<h2>具体用法</h2>
+有了上面的模板，我们可以解决基础的实际性问题：
+<h3><strong>单点修改+区间查询</strong></h3>
+<code>adds(x,y);</code>//在第x个数上加y
+<code>query(y)-query(x-1);</code>//求区间x~y的和（<strong>前缀和</strong>思想）。
+
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3374">【模板】树状数组 1</a><br>代码：</p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    n=read(),m=read();
+    nn=(n&lt;&lt;1);
+    for(fint i=1;i&lt;=n;i++)
+    a[i]=read(),adda(i,a[i]),addb(i,a[i]*i);
+    for(fint i=1;i&lt;=m;i++)
+    &#123;
+        int x,y;
+        scanf("%s",s+1);
+        if(s[1]=='Q')
+        x=read(),cout&lt;&lt;((x+1)*get_tota(x)-get_totb(x))&lt;&lt;endl;
+        else
+        x=read(),y=read(),adda(x,y-a[x]),addb(x,(y-a[x])*x),a[x]=y;
+    &#125;
+    return 0;
+&#125;
+
+inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;
+
+inline void adda(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=p;i+=lowbit(i))
+    trea[i]+=y;
+    return ;
+&#125;
+
+inline void addb(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=p;i+=lowbit(i))
+    treb[i]+=y;
+    return ;
+&#125;
+
+inline int get_tota(int x)
+&#123;
+    int ans=0;
+    for(fint i=x;i;i-=lowbit(i))
+    ans+=trea[i];
+    return ans;
+&#125;
+
+inline int get_totb(int x)
+&#123;
+    int ans=0;
+    for(fint i=x;i;i-=lowbit(i))
+    ans+=treb[i];
+    return ans;
+&#125;</code></pre>
+<p>知道这个，我们就可以求逆序对了，先卖个关子，后面部分有，接着看吧！</p>
+<h1>差分树状数组</h1>
+<h2><strong>概念普及：一维差分</strong></h2>
+差分就是<strong>将数列中的每一项分别与前一项数做差</strong>，例如：
+<table>
+<thead>
+<tr>
+<th>原序列</th>
+<th>1</th>
+<th>2</th>
+<th>5</th>
+<th>4</th>
+<th>7</th>
+<th>3</th>
+<th>\</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>差分序列</td>
+<td>1</td>
+<td>1</td>
+<td>3</td>
+<td>-1</td>
+<td>3</td>
+<td>-4</td>
+<td>-3</td>
+</tr>
+</tbody>
+</table>
+观察表格，我们可以得到以下<strong>规律</strong>：
+<table>
+<thead>
+<tr>
+<th><strong>差分序列第一个数和原来的第一个数一样</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>差分序列最后比原序列多一个数，即最后一个数的相反数</strong></td>
+</tr>
+<tr>
+<td><strong>差分序列求前缀和可得原序列</strong></td>
+</tr>
+<tr>
+<td><strong>将原序列区间[L,R]中的元素全部+1，可以转化操作为差分序列L处+1，R+1处-1</strong></td>
+</tr>
+</tbody>
+</table>
+根据<strong>规律3</strong>我们可以得到( $s$为差分前缀和数组, $a$为原数组， $c$为差分数组)
+<pre><code class="language-cpp">for(fint i=1;i&lt;=n;i++)
+s[i]=s[i-1]+c[i];
+s[i]=a[i];</code></pre>
+<h2>具体实现</h2>
+<h3><strong>区间修改+单点查询</strong></h3>
+根据上文<strong>规律4</strong>我们可以得到区间修改代码(设区间为 $l，r$)
+<pre><code class="language-cpp">adds(l,x),adds(r+1,-x);</code></pre>
+<code>query(x)</code>/​/求出第x个数的值
+
+<p>我们设树状数组 $t[i]$表示 $i$是否在序列中出现过(0为没出现过，1为出现过)。</p>
+<p>那么我们的 $adds$函数就是把 $i$加入到序列中。</p>
+<p>$query$函数就是统计序列中值小于等于 $i$的个数，因为树状数组 $t$维护的是数组 $a$的值，则该求和函数即是用于求下标小于等于 $ i $的数组 $a$的和，而数组 $a$中元素的值要么是 $0$要么是 $1$，所以最后求出来的就是小于等于 $i$的元素的个数。</p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3368">【模板】树状数组 2</a><br>代码:</p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    n=read();
+    m=read();
+    for(fint i=1;i&lt;=n;i++)
+    &#123;
+        a[i]=read();
+        adds(i,a[i]-a[i-1]);
+    &#125;
+    int num; 
+    int c,d,e;
+    for(int i=1;i&lt;=m;i++)
+    &#123;
+        num=read();
+        if(num==1)
+        &#123;
+            c=read();
+            d=read();
+            e=read();
+            adds(c,e);
+            adds(d+1,-e);
+        &#125;
+        else
+        if(num==2)
+        &#123;
+            c=read();
+            cout&lt;&lt;tot(c)&lt;&lt;endl;
+        &#125;
+    &#125;
+    exit(0);
+&#125;
+inline void adds(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    tree[i]+=y;
+&#125;
+inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;
+inline int tot(int x)
+&#123;
+    int t=0;
+    for(fint i=x;i;i-=lowbit(i))
+    t+=tree[i];
+    return t;
+&#125;</code></pre>
+<h3>区间修改+区间查询</h3>
+<strong>先来乱搞一下试试</strong>
+使用差分数组进行建树,可以轻松进行区间修改
+<pre><code class="language-cpp">for(fint i=1;i&lt;=n;i++)
+a[i]=read(),adds(i,a[i]-a[i-1]);
+int x,y,z;
+for(fint i=1;i&lt;=m;i++)
+x=read(),y=read(),z=read(),adds(x,z),adds(y+1,-z);</code></pre>
+所以我们效仿此前直接对每个点进行求和
+<pre><code>for(fint i=1;i&lt;=n;i++)
+ans+=query(r)-query(l-1);</code></pre>
+$lowbit,adds,query$的函数不变。
+<strong>那么，思考一下，这样做对吗？</strong>
+答案显然是否定的！！！
+由于我们维护的是差分序列，那么意味着 $query$函数在这里维护的是差分序列的前缀和，也就是说<code>query(r)query(l-1)</code>此时求得是 $\sum _{i=1}^r c[i]-\sum _{i=1}^{l-1}c[i]$(c[i]表示差分数组)，根据此前说到的差分数组求前缀和即为原数组，那么此时该式子化为了 $a[r]-a[l]$恭喜你成功求得两点之差！，此时我们如果想求区间加和，显然需要在套一层前缀和，达到差分的前缀和的前缀和=原数组的前缀和（doge）这显然会让复杂度！BOOM！
+那么我们不禁会想，如果能把这二次前缀和的操作也放入树状数组中那该多好呀！ 
+
+<p><strong>到底应该如何完成呢？</strong></p>
+<p>别急，我们拆一下式子看看：<br>$∑^n_{i=1}a[i]$<br>$=a[1]+a[2]+a[3]…a[n]$<br>$=c[1]+c[1]+c[2]+c[1]+c[2]+c[3]…c[1]+c[2]…+c[n−1]+c[n]$<br>$=n∗(c[1]+c[2]+…+c[n])-(c[2]+c[3]+….c[n]+c[3]+…c[n]+…+c[n]+c[n])$<br>$=n∗(c[1]+c[2]+…+c[n])−(c[2]+c[3]+….c[n]+c[3]+…c[n]+…+c[n]+c[n])$<br>$=\sum_{i=1}^n\ (n-i+1)×c_i$<br>$=n⋅∑^n_{i=1}c[i]−∑^n_{i=1}c[i]∗(i−1)$<br>$=∑^n_{i=1}c[i]∗(n−i+1)$<br>这样的话，我们维护两个数组-&gt;<br>ta数组维护a的前缀和，tb数组维护 $ta×(i-1)$</p>
+<pre><code class="language-cpp">ta[i]=a[i]-a[i-1];
+tb[i]=ta[i]*(i-1);</code></pre>
+<p><strong>adds</strong><br>$ta[i]$还是与原来的树状数组一样更新， $ta[i]+x$即可</p>
+<p>$tb[i]=ta[i]* (x-1)$</p>
+<p>那么 $tb[i]=(ta[i]+x)* (i-1)$</p>
+<p>即 $tb[i]=(ta[i])* (i-1)+x* (i-1)$</p>
+<p>我们更新 $x*(i-1)$即可</p>
+<pre><code class="language-cpp">inline void adds(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    ta[i]+=y,tb[i]+=y*(x-1);
+    return ;
+&#125;</code></pre>
+<p><strong>query</strong></p>
+<p>求和公式 $∑^n_{i=1}a[i]=n∗∑^n_{i=1}c[i]−∑^n_{i=1}b[i]$</p>
+<pre><code class="language-cpp">inline int query(int x)
+&#123;
+    int tot=0;
+    for(fint i=x;i;i-=lowbit(i))
+    tot+=x*ta[i]-tb[i];
+    return tot;
+&#125;</code></pre>
+<p><strong>如此状况下</strong><br>单点修改：<br>$adds(i,x);$</p>
+<p>区间修改（l,r）</p>
+<p>$adds(l,x),adds(r+1,-x)$</p>
+<p>单点查询：</p>
+<p>$query(x)$</p>
+<p>区间查询</p>
+<p>$query(r)-query(l-1)$</p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3372">【模板】线段树 1</a></p>
+<p>树状数组版代码：</p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    n=read(),m=read();
+    for(fint i=1;i&lt;=n;i++)
+        a[i]=read(),adds(i,a[i]-a[i-1]);
+        for(fint i=1;i&lt;=m;i++)
+        &#123;
+            int b,c,d,e;
+            b=read();
+            if(b==1)
+            c=read(),d=read(),e=read(),adds(c,e),adds(d+1,-e);
+            else
+            if(b==2)
+            c=read(),d=read(),cout&lt;&lt;query(d)-query(c-1)&lt;&lt;endl;
+        &#125;
+    return 0;
+&#125;
+
+inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;
+
+inline void adds(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    ta[i]+=y,tb[i]+=y*(x-1);
+    return ;
+&#125;
+
+inline int query(int x)
+&#123;
+    int tot=0;
+    for(fint i=x;i;i-=lowbit(i))
+    tot+=x*ta[i]-tb[i];
+    return tot;
+&#125;</code></pre>
+<h1>二维树状数组</h1>
+<h2>概念普及：二维差分和二维前缀和</h2>
+回顾一下之前说到的一维差分：
+
+<p>差分与前缀和互为逆运算,即<strong>差分数组的前缀和数组为原数组</strong>,<strong>前缀和数组的差分数组为原数组</strong>.二者都利用了容斥原理.</p>
+<p><strong>那么二维差分呢？</strong></p>
+<p>我们先来看看二维差分的逆运算二维前缀和。<br>我们定义为以二维数组的首行首列(即左上角)元素为左上角,当前位置元素为右下角的矩阵的元素和.<br><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/wmli1zl9.png" alt="" /></p>
+<p>我们要求黑色部分的和其实就是红色部分(当前位置值)加上绿色部分和紫色部分【 $(i-1,j)$和 $(i,j-1)$的前缀和】，中间橙色部分【 $(i-1,j-1)$的前缀和】被减了两次，我们再加回来。<br>根据容斥原理，我们可以得到二维前缀和的式子：</p>
+<p>$f_{i,j}=f_{i-1,j}+f_{i,j-1}-f_{i-1,j-1}+a_{i,j}$</p>
+<p>如果我们想通过前缀和求得原数组（单个元素的值），就做差即可：<br><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/jvtzsk58.png" alt="" /></p>
+<p>黑色块的值=红色块的值减去绿色和黄色块的值，橙色部分被减了两次，再加回来。</p>
+<p>得到柿子：</p>
+<p>$a_{i,j}=f_{i,j}-f_{i-1,j}-f_{i,j-1}+f_{i-1,j-1}$</p>
+<p>众所周知，<strong>前缀数组还原成原数组需要的操作正是差分！</strong></p>
+<p>那么，推广到二维的容斥上，可得类似推论<br>$f_{i,j}=a_{i,j}-a_{i-1,j}-a_{i,j-1}+a_{i-1,j-1}$<br><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/408xe87s.png" alt="" /></p>
+<p>那么修改其实也一样。如果想对黑色部分全部+1，那么在 $(x_1,y_1)$位置＋1，此时受影响的是整个大矩阵，我们只想让小矩阵收到影响，所以我们要减去绿色部分和红色部分，载吧多减了一次的橙色部分加上，这样就在 $O(1)$的时间内完成了单次修改。</p>
+<p>看看代码：</p>
+<p>如果想做这样的区间加减</p>
+<pre><code class="language-cpp">for(fint i=la;i&lt;=ra;i++)
+for(fint j=lb;j&lt;=rb;j++)
+a[i][j]+=x;    </code></pre>
+
+<p>使用差分的话，就是</p>
+<pre><code class="language-cpp">a[la][ra]++,a[lb][rb]++;
+a[la][rb+1]--,a[lb+1][ra]--;</code></pre>
+
+<p>也是个多退少补吧！</p>
+<p>是不是很像，恰好是二维前缀和反过来了，这就是逆运算吧，i了i了。</p>
+<h2>具体实现</h2>
+<ul>
+<li>
+lowbit不变
+</li>
+<li>
+单差分修改,查询变为：
+</li>
+</ul>
+<pre><code class="language-cpp">inline void adds(int x,int y,int z)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    for(fint j=y;j&lt;=m;j+=lowbit(j))
+    t[i][j]+=z;
+    return ;
+&#125;
+
+<p>inline int query(int x,int y)<br>&#123;<br>    int tot=0;<br>    for(fint i=x;i;i-=lowbit(i))<br>    for(fint j=y;j;j-=lowbit(j))<br>    tot+=t[i][j];<br>    return tot;<br>&#125;</code></pre><br>讲真，除了多出来一维之外和一维树状数组没毛区别。</p>
+<h3>单点修改+区间查询</h3>
+
+<p>就是把一维前缀和求差分变成了二维前缀和求差分(还原数组)</p>
+<pre><code class="language-cpp">while(cin&gt;&gt;op)
+&#123;
+    int x,y,k;
+    if(op==1)
+    cin&gt;&gt;x&gt;&gt;y&gt;&gt;k,adds(x,y,k);
+    int a,b,c,d;
+    if(op==2)
+    cin&gt;&gt;a&gt;&gt;b&gt;&gt;c&gt;&gt;d,cout&lt;&lt;query(c,d)-query(a-1,d)-query(c,b-1)+query(a-1,b-1)&lt;&lt;endl;
+&#125;</code></pre>
+<h3>区间修改+单点查询</h3>
+
+<p>其实就是个对差分数组求前缀和的操作，修改变得复杂，查询变得简单</p>
+<pre><code class="language-cpp">while(cin&gt;&gt;op)
+&#123;
+    int a,b,c,d,k;
+    if(op==1)
+    cin&gt;&gt;a&gt;&gt;b&gt;&gt;c&gt;&gt;d&gt;&gt;k,adds(a,b,k),adds(a,d+1,-k),adds(c+1,b,-k),adds(c+1,d+1,k);
+    int x,y;
+    if(op==2)
+    cin&gt;&gt;x&gt;&gt;y,cout&lt;&lt;query(x,y)&lt;&lt;endl;
+&#125;</code></pre>
+<h3>区间修改+区间查询</h3>
+
+<p>修改和查询都变得复杂，本质上是差分求前缀和再求前缀和的操作</p>
+<p>先看公式推导<br><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/l25mc017.png" alt="" /></p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/wf1ezqk6.png" alt="" />
+
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/0e3rqqo2.png" alt="" />
+
+<p>此时需要开4个操作数组：</p>
+<pre><code class="language-cpp">inline void adds(int x,int y,int z)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    for(fint j=y;j&lt;=m;j+=lowbit(j))
+    ta[i][j]+=z,tb[i][j]+=(x-1)*z,tc[i][j]+=(y-1)*z,td[i][j]+=(x-1)*(y-1)*z;
+    return ;
+&#125;
+
+inline int query(int x,int y)
+&#123;
+    int tot=0;
+    for(fint i=x;i;i-=lowbit(i))
+    for(fint j=y;j;j-=lowbit(j))
+    tot+=ta[i][j]*x*y-tb[i][j]*y-tc[i][j]*x+td[i][j];
+    return tot;
+&#125;</code></pre>
+<p>查询修改代码：</p>
+<pre><code class="language-cpp">while(cin&gt;&gt;op)
+&#123;
+    int a,b,c,d,k;
+    if(op==1)
+    cin&gt;&gt;a&gt;&gt;b&gt;&gt;c&gt;&gt;d&gt;&gt;k,adds(a,b,k),adds(a,d+1,-k),adds(c+1,b,-k),adds(c+1,d+1,k);
+    int x,y;
+    if(op==2)
+    cin&gt;&gt;x&gt;&gt;y,cout&lt;&lt;query(x,y)&lt;&lt;endl;
+&#125;</code></pre>
+<h1>树上的树状数组</h1>
+树状数组本身就是一种类似树形的数据结构，一般来说只适合维护线性序列区间(或者矩阵区间)。对于树形结构我们有办法维护吗？
+
+<p>答案是肯定的！<br>但在此之前，我想先请大家了解几个小的前置知识。</p>
+<h2>概念普及:树上差分和DFS序</h2>
+<h3>树的差分</h3>
+<h4>前置知识</h4>
+首先请确保你已经完全理解了一维差分的内容和LCA的知识，知道差分是如何对区间进行修改的，并会使用倍增or树链剖分求LCA。如果不知道，请先仔细学习。
+
+<p>话不多说，开始讲述。</p>
+<p><strong>什么是树上差分？</strong></p>
+<p>树上差分就是对一条树链进行 $O(1)$的修改，需要LCA来维护。</p>
+<p>树上差分有点差分和边差分两种</p>
+<h4>点差分</h4>
+对于一条路径 $(s,t)$所有点权全部加上 $1$
+
+<p>为了方便设 $ a[x]$是 $x$的点权, $LCA(s,t)$为公共祖先， $Fa(x)$为x的父亲。<br><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/yyv2tikx.png" alt="" /></p>
+<p>我们把链拆分成两部分 $s\to LCA,t\to LCA$.我们要把这两条路径上分别进行修改，显然是 $s+1,t+1,Fa(LCA)-1$.可是，对于这两条路径有一个重复的点也就是他们的公共祖先 $LCA$被经过了两次，所以应该让 $LCA-1$.</p>
+<p>代码：</p>
+<pre><code class="language-cpp">ans[s]++,ans[t]++;
+ans[LCA(s,t)--],ans[Fa[LCA(s,t)]]--;</code></pre>
+<h4>边差分</h4>
+
+<p>对于一条路径 $(s,t)$所有边权全部加上 $1$</p>
+<p>设 $a[x]$是x到 $fa[x]$的边权。<br><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/6ld9lwqb.png" alt="" /></p>
+<p>如果我们还按照点差分的方法，那就会使回溯的步骤经过 $Fa_{LCA}\to LCA$这条路。这是不行的。所以我们应该不经过LCA点进行差分。</p>
+<p>我们分别对图中 $s\to Leftson_{LCA}$和 $t\to Rightson_{LCA}$<br>也就是 $s+1,t+1,LCA-1,LCA-1$</p>
+<p>这样就不会经过 $Fa_{LCA}\to LCA$这条路啦！</p>
+<p>此时代码</p>
+<pre><code class="language-cpp">ans[s]++,ans[t]++;
+ans[LCA(s,t)--],ans[Fa[LCA(s,t)]]--;</code></pre>
+<p>那么我们就掌握了最基础的树上差分啦</p>
+<h3>DFS序</h3>
+<h4>基础概念</h4>
+
+<p>dfs序，顾名思义就是dfs的顺序，在一棵树中我们记录它第一次被访问的时间和被回溯后的时间，这两者差的时间就是访问子树的时间，也可以说就是子树的大小啦。在DFS序的帮助下，我们可以将树转化为线性结构。然后使用其他数据结构（如树状数组维护）达到修改查询的目的。</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/ktjk4ici.png" alt="" />
+
+<p>我们将这棵树进行了DFS的处理操作，就使得其变成了如上的线性结构。</p>
+<p>知道了这些，我们就可以往树上套树状数组了！</p>
+<h2>具体实现</h2>
+<h4>单点修改+子树求和</h4>
+
+<p>我们用dfs序记录时间戳，根据访问时间让结构变成线性的，然后在dfs序的位置是维护一个树状数组，设这个记录访问时间的数组为 $dfn$，那么单点修改操作就是：</p>
+<p><code>addup(dfn[a],x)</code></p>
+<p>而我们根据dfs序的性质可以知道初次访问时间-回溯时间=子树大小。我们可以记录回溯过来的时间，也可以简单dp一下记录子树和。这里先介绍一下第二种方法：</p>
+<pre><code class="language-cpp">inline void dfs(int x,int fa)
+&#123;
+    dfn[x]=++tim;
+    siz[x]=1;
+    for(fint i=head[x];i;i=e[i].nxt)
+    if(e[i].to!=fa)
+    dfs(e[i].to,x),siz[x]+=siz[e[i].to];
+    return ;
+&#125;</code></pre>
+<p>那么查询很简单了</p>
+<pre><code class="language-cpp">cout&lt;&lt;query(dfn[a]+siz[a]-1)-query(dfn[a]-1)&lt;&lt;endl</code></pre>
+<p>其他部分套树状数组模板即可</p>
+<h4>子树修改+子树求和</h4>
+
+<p>既然要修改一棵子树，那我们自然需要用到差分，在树上的一条链差分并不是<code>v[i]-v[i-1]</code>那么简单。我们用 $viss$数组记录时间对应的节点，用 $dfn$数组记录节点对应时间，用 $ou$数组记录回溯的时间。<br>跑出dfs序</p>
+<pre><code class="language-cpp">inline void dfs(int x,int fa)
+&#123;
+    dfn[x]=++tim;
+    siz[x]=1;
+    for(fint i=head[x];i;i=e[i].nxt)
+    if(e[i].to!=fa)
+    dfs(e[i].to,x),siz[x]+=siz[e[i].to];
+    return ;
+&#125;</code></pre>
+<p>由于我们在树状数组中维护的是 $dfs$序，我们应该将当前的i节点的权值和比他早一个时间节点访问的元素进行差分。</p>
+<p>这是对树状数组的初始元素添加：</p>
+<pre><code class="language-cpp">addup(dfn[i],v[i]-v[viss[dfn[i]-1]]);</code></pre>
+
+<p>求和的话就直接用树状数组维护回溯时间减去初次访问时间的权值即可</p>
+<pre><code class="language-cpp">cout&lt;&lt;query(ou[a])-query(dfn[a]-1)&lt;&lt;endl;</code></pre>
+<h4>链修改+单点查询+子树求和</h4>
+
+<p><strong>这是这一部分的重难点！！！</strong></p>
+<p>首先链修改，修改的是点权，那么我们之前介绍的点差分就派上了用场，此时我们用<strong>差分树状数组维护一个点差分数组</strong>（好像在套娃）。大家应该还没忘记点差分的做法吧？！</p>
+<pre><code class="language-cpp">addup(dfn[x],val,1),addup(dfn[lca],-val,1);
+addup(dfn[y],val,1),addup(dfn[f[lca][0]],-val,1);</code></pre>
+
+<p>此时如果只有单点查询，那么树状数组直接求前缀和就可以帮助我们了：</p>
+<p>只需要将回溯时间减去初次访问时间即可</p>
+<pre><code class="language-cpp">query(ou[a],1)-query(dfn[a]-1,1)</code></pre>
+<p>目前这部分看起来就是将上一部分内容再差分了一步。<br><strong>但是还有子树查询，这可怎么办？</strong></p>
+<p>有人可能会觉得用之前差分树状数组中的区间求和操作即可。但子树可能含有很多条链，这对于维护线性序列的树状数组来说十分困难。所以我们需要<strong>结合dfs序来处理。</strong></p>
+<p>我们可以考虑子树中节点对整个子树的贡献，画个图看一下</p>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/ir0c1lvy.png" alt="" />
+
+<p>不难发现，同一子树中深度大的节点对深度浅的节点的子树和有贡献，贡献就是 $val_v*(dep_v-dep_u+1)$,我们再用一棵点差分线段树，不储存点权，而是储存子树的差分贡献<br>上个代码：</p>
+<pre><code class="language-cpp">addup(dfn[x],val*dep[x],2),addup(dfn[lca],-val*dep[lca],2);
+addup(dfn[y],val*dep[y],2),addup(dfn[f[lca][0]],-val*dep[f[lca][0]],2);</code></pre>
+
+<p>那么查询就不难了</p>
+<p>我们对以 $a$为根子树差分贡献求一个前缀和再减去其中 $a$的点权的贡献就是 $a$子树的权值和了</p>
+<pre><code class="language-cpp">(query(ou[a],2)-query(dfn[a]-1,2))-(query(ou[a],1)-query(dfn[a]-1,1))*(dep[x]-1)</code></pre>
+
+<p>这时的树状数组需要两个，分别维护两种操作。</p>
+<pre><code class="language-cpp">inline void addup(int x,int y,int id)
+&#123;
+    for(fint i=x;i&lt;=p;i+=lowbit(i))
+    t[i][id]+=y;
+    return ; 
+&#125;
+
+inline int query(int x,int id)
+&#123;
+    int tot=0;
+    for(fint i=x;i;i-=lowbit(i))
+    tot+=t[i][id];
+    return tot;
+&#125;
+
+inline void dfs(int x,int fa)
+&#123;
+    dfn[x]=++tim;
+    for(fint i=head[x];i;i=e[i].nxt)
+    if(e[i].to!=fa)
+    dfs(e[i].to,x);
+    ou[x]=tim;
+    return ; 
+&#125;
+
+inline void add(int x,int y,int val)
+&#123;
+    int lca=LCA(x,y);
+    addup(dfn[x],val,1),addup(dfn[lca],-val,1);
+    addup(dfn[y],val,1),addup(dfn[f[lca][0]],-val,1);
+    addup(dfn[x],val*dep[x],2),addup(dfn[lca],-val*dep[lca],2);
+    addup(dfn[y],val*dep[y],2),addup(dfn[f[lca][0]],-val*dep[f[lca][0]],2);
+    return ; 
+&#125;</code></pre>
+<p>好了，这样我们就可以用树状数组实现链修改+单点查询+子树求和啦！是不是很神奇呢？</p>
+<h1>树状数组的延申应用</h1>
+你可能想不到，树状数组还有这么多功能！快来学习一下吧！
+
+<h2>求逆序对</h2>
+
+<p>我们设树状数组 $t[i]$表示 $i$是否在序列中出现过(0为没出现过，1为出现过)。</p>
+<p>那么我们的 $adds$函数就是把 $i$加入到序列中。</p>
+<p>$query$函数就是统计序列中值小于等于 $i$的个数，因为树状数组 $t$维护的是数组 $a$的值，则该求和函数即是用于求下标小于等于 $ i $的数组 $a$的和，而数组 $a$中元素的值要么是 $0$要么是 $1$，所以最后求出来的就是小于等于 $i$的元素的个数。</p>
+<p><strong>如何求逆序对个数呢？</strong></p>
+<p>我们从左往右依次将给定的序列输入，每次输入一个数时，就将当前序列中大于这个数的元素的个数计算出来，并累加到答案，最后的答案就是这个序列的逆序数个数。</p>
+<p>代码：</p>
+<pre><code class="language-cpp">for(fint i=1;i&lt;=n;i++)
+&#123;
+    cin&gt;&gt;a;
+    adds(a,1);
+    ans+=i-query(a);
+&#125;
+cout&lt;&lt;ans;
+return 0;</code></pre>
+<p>如果数据范围大呢？（如<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1966">火柴排队</a>）</p>
+<p>我们需要考虑<strong>离散化</strong>。</p>
+<p>正常的离散化只需要记录他是第几大的数即可。</p>
+<p>记录 $a$数组的id和 $b$数组的id，然后排序。</p>
+<p>如：<br>$a:1\ 3\ 4\ 2$</p>
+<p>$b:1\ 7\ 2\ 4$<br>排序后：</p>
+<p>$a_{val}=1\ 2\ 3\ 4$</p>
+<p>$a_{id}=1\ 4\ 2\ 3$</p>
+<p>$b_{val}=1\ 2\ 4\ 7$</p>
+<p>$b_{id}=1\ 3\ 4\ 2$</p>
+<p>用 $c$数组记录 $a$的id对 $b$的id的映射,即：</p>
+<p>$c[1]=1,c[4]=3,c[2]=4,c[3]=2$</p>
+<p>此时c数组的下标代表着a数组的大小关系</p>
+<p>通俗点说就是： $c[2]=4$表示第二小的数初始位置在第四个。</p>
+<p>这样的话， $a,b$数组已经完成了匹配。这时候，看 $c$有几组逆序对即可</p>
+<pre><code class="language-cpp">for(fint i=1;i&lt;=n;i++)
+adds(c[i],1),ans+=i-query(c[i]);</code></pre>
+<p>来道例题吧：</p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1774">最接近神的人</a></p>
+<p>求逆序对，要先对数据进行离散化</p>
+<p>如样例：</p>
+<p>2,8,0,3序号为1，2，3，4</p>
+<p>排序后序号为3，1，4，2</p>
+<p>离散化后 $a_3=1,a_1=2,a_4=3,a_2=4$</p>
+<p>而我们要求的排序后序列为： $a_1=1,a_2=2,a_3=3,a_4=4$</p>
+<p>加入树状数组后即可求逆序对。</p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    cin&gt;&gt;n;
+    for(fint i=1;i&lt;=n;i++)
+    cin&gt;&gt;a[i],num[i]=i;
+    stable_sort(num+1,num+n+1,cmp);
+    for(fint i=1;i&lt;=n;i++)
+    a[num[i]]=i;
+    int ans=0;
+    for(fint i=1;i&lt;=n;i++)
+    adds(a[i],1),ans+=(i-query(a[i])); 
+    cout&lt;&lt;ans;
+    return 0;
+&#125;
+
+inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;
+
+inline void adds(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    t[i]+=y;
+    return ;
+&#125;
+
+inline int query(int x)
+&#123;
+    int tot=0;
+    for(fint i=x;i;i-=lowbit(i))
+    tot+=t[i];
+    return tot;
+&#125;
+
+inline int cmp(int x,int y)
+&#123;
+    return a[x]&lt;a[y];
+&#125;</code></pre>
+
+<p>可能你已经看出来了，树状数组离散化后求逆序对其实正是找区间 $[1,now]$内有几个小于等于 $now$的元素。那我们也可以有许多不少新的延申应用</p>
+<h2>求三元逆序对</h2>
+<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/CF61E">Enemy is weak</a>
+
+<p>我们用两个树状数组，分别求从 $1$到 $i-1$中有多少个数比他大，从 $i-1$到 $n$中有多少个数比他小即可。<br>代码：</p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    cin&gt;&gt;n;
+    for(fint i=1;i&lt;=n;i++)
+    cin&gt;&gt;a[i];
+    for(fint i=1;i&lt;=n;i++)
+    b[i]=a[i];
+    sort(b+1,b+n+1);
+    int len=unique(b+1,b+n+1)-b-1;
+    for(fint i=1;i&lt;=n;i++)
+    a[i]=lower_bound(b+1,b+len+1,a[i])-b;
+    for(fint i=n;i&gt;=1;i--)
+    l[i]+=query_a(a[i]-1),adds_a(a[i],1);
+    for(fint i=1;i&lt;=n;i++)
+    r[i]+=query_b(n)-query_b(a[i]-1),adds_b(a[i],1);
+    int ans=0;
+    for(fint i=1;i&lt;=n;i++)
+    ans+=l[i]*r[i];
+    cout&lt;&lt;ans;
+    return 0;
+&#125;</code></pre>
+<p>延申，再延申！</p>
+<h2>求排名</h2>
+
+<p>我们通过查找知道左边有几个比自己大的和右边有几个比自己大的，不就知道了排名吗？有平衡树那味儿了，hhh。</p>
+<p>代码：</p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    cin&gt;&gt;n;
+    for(fint i=1;i&lt;=n;i++)
+    cin&gt;&gt;a[i];
+    for(fint i=1;i&lt;=n;i++)
+    b[i]=a[i];
+    sort(b+1,b+n+1);
+    int len=unique(b+1,b+n+1)-b-1;
+    for(fint i=1;i&lt;=n;i++)
+    a[i]=lower_bound(b+1,b+len+1,a[i])-b;
+    for(fint i=n;i&gt;=1;i--)
+    l[i]+=query_a(a[i]-1),adds_a(a[i],1);
+    for(fint i=1;i&lt;=n;i++)
+    r[i]+=query_b(a[i]-1),adds_b(a[i],1);
+    int ans=0;
+    for(fint i=1;i&lt;=n;i++)
+    rank[i]=l[i]+r[i]+1,cout&lt;&lt;rank[i]&lt;&lt;" ";
+    return 0;
+&#125;</code></pre>
+<h2>求前驱后继</h2>
+再离散化后的有序数组内，知道了排名就相当于知道了前驱后继。
+
+<p>假如我们要查询第 $x$名的前驱与后继，先用 $map$映射出第x名的元素</p>
+<pre><code class="language-cpp">mp[rank[x]]=i;</code></pre>
+<p>然后在 $map$中找到 $rank[x]$的前一名即可</p>
+<p>当然也可以像之前luogu日报里一样用倍增解决，这里不再赘述。</p>
+<h2>拉格朗日恒等式</h2>
+拉格朗日恒等式是18世纪由法国数学家<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/约瑟夫·路易斯·拉格朗日/7070424">约瑟夫·路易斯·拉格朗日</a>提出的数学恒等式。
+<strong>内容</strong>
+<img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.luogu.com.cn/upload/image_hosting/st83vkvj.png" alt="" />
+也就是说，我们随便乱拆就可以把式子化简为：
+
+<p>$\sum_{i=1}^{n} a_{i}^{2} b_{i}^{2}+\sum_{1 \leq i&lt;j \leq n} a_{i}^{2} b_{j}^{2}+\sum_{1 \leq i&lt;j \leq n} a_{j}^{2} b_{i}^{2}$</p>
+<p><strong>这很显然啊！</strong><br>我们可以倒推来证明嘛</p>
+<p>$\begin{array}{l}<br>A=\sum_{i=1}^{n} a_{i}^{2} b_{i}^{2}+\sum_{1 \leq i&lt;j \leq n} a_{i}^{2} b_{j}^{2}+\sum_{1 \leq i&lt;j \leq n} a_{j}^{2} b_{i}^{2} \<br>B=\sum_{i=1}^{n} a_{i}^{2} b_{i}^{2}+2 \sum_{1 \leq i&lt;j \leq n} a_{i} b_{i} a_{j} b_{j}+\sum_{1 \leq i&lt;j \leq n} a_{i}^{2} b_{j}^{2}-2 \sum_{1 \leq i&lt;j \leq n} a_{i} b_{j} a_{j} b_{i}+\sum_{1 \leq i&lt;j \leq n} a_{j}^{2} b_{i}^{2} \<br>=\sum_{i=1}^{n} a_{i}^{2} b_{i}^{2}+\sum_{1 \leq j \leq n} a_{i}^{2} b_{j}^{2}+\sum_{1 \leq i&lt;j \leq n} a_{j}^{2} b_{i}^{2} \<br>\therefore A=B<br>\end{array}$</p>
+<p>所以呢，由此可知</p>
+<p>$\left(\sum_{i=1}^{n} a_{i}^{2}\right)\left(\sum_{i=1}^{n} b_{i}^{2}\right)=\left(\sum_{i=1}^{n} a_{i} b_{i}\right)^{2}+\sum_{1 \leq i&lt;j \leq n}\left(a_{i} b_{j}-a_{j} b_{i}\right)^{2}$</p>
+<p>这就是著名的<strong>拉格朗日恒等式</strong>的内容.</p>
+<p>那么对于式子：<br>$\sum_{i=1}^{n}\sum_{j=1}^{n}(a_ib_j-a_jb_i)^2$<br>其实就等于 $\left(\sum_{i=1}^{n} a_{i}^{2}\right)\left(\sum_{i=1}^{n} b_{i}^{2}\right)\left(\sum_{i=1}^{n} a_{i} b_{i}\right)^{2}$</p>
+<p>式子被分为三个部分，我们可以使用树状数组来维护。</p>
+<p>代码：</p>
+<pre><code class="language-cpp">p=read(),l_a=read(),r_a=read(),l_b=read(),r_b=read();
+cout&lt;&lt;((1LL*query(0,l_a,r_a)*query(1,l_a,r_a)-Pow(query(2,l_a,r_a)))%mods+mods)%mods;
+inline int Pow(int x)
+&#123;
+    return 1LL*x*x%mods;
+&#125;
+
+inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;
+
+inline void adds(int id,int x, int y)
+&#123;
+    y=(y+mods)%mods;
+    for(fint i=x,j=0;i&lt;=n;i+=lowbit(i))
+    t[i][id]+=y,t[i][id]&gt;mods?t[i][id]-=mods:j++;
+    return ;
+&#125;
+
+inline int query(int id, int l, int r)
+&#123;
+    return qry(id,r)-qry(id,l-1);
+&#125;
+
+inline int qry(int id,int x)
+&#123;
+    int tot=0;
+    for(fint i=x,j=0;i;i-=lowbit(i))
+    tot+=t[i][id],tot&gt;mods?tot-=mods:j++;
+    return tot;
+&#125;
+</code></pre>
+<p>非常合理</p>
+<h2>区间最值</h2>
+
+<p>神奇的树状数组也可以处理区间最值的问题</p>
+<p><strong>修改</strong></p>
+<p>浅显易懂，直接暴力求最值</p>
+<pre><code class="language-cpp">inline void adds(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    t[x]=max(t[x],y);
+&#125;</code></pre>
+
+<p><strong>查询</strong></p>
+<p>若 $r-lowbit(r)&gt;l$，<strong>我们可以把求x,y区间的最大值拆分成两部分，[先求l,r-lowbit(r)]中最大值与[r-lowbit(r)+1,r]中的最大值，再求这两者的最大值。</strong><br>我们可以发现<strong>[ r-lowbit(y)+1,r ]=tree[r]</strong></p>
+<p>否则的话<strong>原问就变成了：求 [x,y-1]中最大值 与 a[y] 的最大值。</strong></p>
+<pre><code class="language-cpp">inline void findx(intl,int r)
+&#123;
+    if(r-lowbit(r)&gt;l)
+    return max(t[r],findx(l,y-lowbit(r)))
+    return max(a[y],findx(x,y-1));
+&#125;</code></pre>
+
+<p>看看这道题</p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2880">Balanced Lineup G</a></p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    cin&gt;&gt;n&gt;&gt;q;
+    int a,b,c;
+    memset(treeb,0x7f,sizeof(treeb));
+    for(fint i=1;i&lt;=n;i++)
+    &#123;
+        cin&gt;&gt;a;
+        f[i]=a;
+        addup(i,a);
+    &#125;
+    for(fint i=1;i&lt;=q;i++)
+    &#123;
+        cin&gt;&gt;b&gt;&gt;c;
+        cout&lt;&lt;totmax(b,c)-totmin(b,c)&lt;&lt;endl;
+    &#125;
+    return 0;
+&#125;
+int totmax(int x, int y)
+&#123; 
+    if(y&gt;x)
+    &#123;
+        if(y-lowbit(y)&gt;x) 
+        return max(treea[y],totmax(x,y-lowbit(y)));
+        else 
+        return max(f[y],totmax(x,y-1));
+    &#125;
+    return f[x];
+&#125;
+int totmin(int x, int y) 
+&#123; 
+    if(y&gt;x)
+    &#123;
+        if(y-lowbit(y)&gt;x) 
+        return min(treeb[y],totmin(x,y-lowbit(y)));
+        else 
+        return min(f[y],totmin(x, y-1));
+    &#125;
+    return f[x];
+&#125;
+inline void addup(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+treea[i]=max(treea[i],y),treeb[i]=min(treeb[i],y);
+&#125;
+inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;</code></pre>
+<p>接着延申</p>
+<h2>ST表</h2>
+
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3865">ST表经典题——静态区间最大值</a></p>
+<p>会查区间最值了，自然就能解决ST表</p>
+<p>直接上代码（尼古卡的严，只有92分）：</p>
+<pre><code class="language-cpp">signed main()
+&#123;
+    scanf("%d%d",&amp;n,&amp;q);
+    for(fint i=1;i&lt;=n;i++)
+    scanf("%d",&amp;a[i]),adds(i,a[i]);
+    int l,r;
+    for(fint i=1;i&lt;=q;i++)
+    scanf("%d%d",&amp;l,&amp;r),printf("%d\n",totmax(l,r));
+    return 0;
+&#125;
+inline int totmax(int x,int y)
+&#123; 
+    if(y&gt;x)
+    &#123;
+        if(y-lowbit(y)&gt;x) 
+        return max(t[y],totmax(x,y-lowbit(y)));
+        else 
+        return max(a[y],totmax(x,y-1));
+    &#125;
+    return a[x];
+&#125;
+
+inline void adds(int x,int y)
+&#123;
+    for(fint i=x;i&lt;=n;i+=lowbit(i))
+    t[i]=max(t[i],y);
+&#125;
+
+inline int lowbit(int x)
+&#123;
+    return x&amp;(-x);
+&#125;</code></pre>
+
+<h1>后记</h1>
+<h3>推荐题目</h3>
+最后推荐几道简单的练习题给大家：
+<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2357">守墓人</a>
+
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P4939">Agent2</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P6278">Haircut G</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1908">逆序对</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1966">火柴排队</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3253">删除物品</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Thomitics</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.foxex.cn/2021/05/03/Treeflow/">https://blog.foxex.cn/2021/05/03/Treeflow/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.foxex.cn" target="_blank">Thomitics</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></div><div class="post_share"><div class="social-share" data-image="https://tvax2.sinaimg.cn/large/0072Vf1pgy1foxkg2posaj31hc0u0x01.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/10/Z-function/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkjcneg1j31kw0w0hbs.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Z函数（扩展 KMP）</div></div></a></div><div class="next-post pull-right"><a href="/2021/05/01/KMP/"><img class="next-cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/%E7%8E%89%E6%89%89%E7%BB%95%E5%B0%98%E6%AD%8C-2048x1536.jpg" onerror="onerror=null;src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">KMP算法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/01/15/关于SBT平衡树/" title="关于SBT平衡树"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tva1.sinaimg.cn/large/9bd9b167ly1fwsfzt2p29j21hc0u04qp.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-15</div><div class="title">关于SBT平衡树</div></div></a></div><div><a href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-28</div><div class="title">FHQ-Treap</div></div></a></div><div><a href="/2021/04/30/ODT/" title="珂朵莉树"><img class="cover" src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/v2-dab9afe9114971ed82c27e5516af35b8_720w.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-01</div><div class="title">珂朵莉树</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/picbed/pics/avatar.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/thomitics/blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Thomitics</div><div class="author-info__description">Nothing Last Forever.</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/thomitics"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/thomitics" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:likiblaze@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://weibo.com/LikiBlaze/" target="_blank" title="Weibo"><i class="fab fa-weibo"></i></a><a class="social-icon" href="https://twitter.com/BlazeLiki" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a><a class="social-icon" href="tencent://message/?uin=2188955531&amp;Site=&amp;Menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://www.zhihu.com/people/likiblaze" target="_blank" title=""><i class="iconfont  icon-zhihu2"></i></a><a class="social-icon" href="https://space.bilibili.com/13164198" target="_blank" title=""><i class="iconfont  icon-bilibili1"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">普通树状数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">概念普及：树状数组的原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.2.</span> <span class="toc-text">具体用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.2.1.</span> <span class="toc-text">单点修改+区间查询</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">差分树状数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.1.</span> <span class="toc-text">概念普及：一维差分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.2.</span> <span class="toc-text">具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">3.2.1.</span> <span class="toc-text">区间修改+单点查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">3.2.2.</span> <span class="toc-text">区间修改+区间查询</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">二维树状数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">4.1.</span> <span class="toc-text">概念普及：二维差分和二维前缀和</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">4.2.</span> <span class="toc-text">具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">4.2.1.</span> <span class="toc-text">单点修改+区间查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">4.2.2.</span> <span class="toc-text">区间修改+单点查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">4.2.3.</span> <span class="toc-text">区间修改+区间查询</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">树上的树状数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">5.1.</span> <span class="toc-text">概念普及:树上差分和DFS序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">5.1.1.</span> <span class="toc-text">树的差分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">5.1.1.1.</span> <span class="toc-text">前置知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">5.1.1.2.</span> <span class="toc-text">点差分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">5.1.1.3.</span> <span class="toc-text">边差分</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">5.1.2.</span> <span class="toc-text">DFS序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">5.1.2.1.</span> <span class="toc-text">基础概念</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">5.2.</span> <span class="toc-text">具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">5.2.0.1.</span> <span class="toc-text">单点修改+子树求和</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">5.2.0.2.</span> <span class="toc-text">子树修改+子树求和</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">5.2.0.3.</span> <span class="toc-text">链修改+单点查询+子树求和</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">树状数组的延申应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.1.</span> <span class="toc-text">求逆序对</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.2.</span> <span class="toc-text">求三元逆序对</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.3.</span> <span class="toc-text">求排名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.4.</span> <span class="toc-text">求前驱后继</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.5.</span> <span class="toc-text">拉格朗日恒等式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.6.</span> <span class="toc-text">区间最值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">6.7.</span> <span class="toc-text">ST表</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text">后记</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">7.0.1.</span> <span class="toc-text">推荐题目</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/P2717/" title="P2717题解"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxlhjn4x1j31hc0u04fr.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="P2717题解"/></a><div class="content"><a class="title" href="/2021/06/28/P2717/" title="P2717题解">P2717题解</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/EdisonBa/" title="OI模板"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkibab1zj31hc0u0dy7.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI模板"/></a><div class="content"><a class="title" href="/2021/06/28/EdisonBa/" title="OI模板">OI模板</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/28/OI-problems/" title="OI经典题目"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1fodqi3sqatj312z0svu0x.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="OI经典题目"/></a><div class="content"><a class="title" href="/2021/06/28/OI-problems/" title="OI经典题目">OI经典题目</a><time datetime="2021-06-28T16:00:00.000Z" title="发表于 2021-06-29 00:00:00">2021-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkft70qtj31hc0u0tqy.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="FHQ-Treap"/></a><div class="content"><a class="title" href="/2021/06/27/FHQ-Treap/" title="FHQ-Treap">FHQ-Treap</a><time datetime="2021-06-27T16:00:00.000Z" title="发表于 2021-06-28 00:00:00">2021-06-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://tvax4.sinaimg.cn/large/0072Vf1pgy1foxkjcneg1j31kw0w0hbs.jpg" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/Thomitics/PicBed@master/pics/40404.jpg'" alt="Z函数（扩展 KMP）"/></a><div class="content"><a class="title" href="/2021/06/10/Z-function/" title="Z函数（扩展 KMP）">Z函数（扩展 KMP）</a><time datetime="2021-06-10T16:00:00.000Z" title="发表于 2021-06-11 00:00:00">2021-06-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Thomitics</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">本网站由<a target="_blank" rel="noopener" href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src= "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-lazy-src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io/images/又拍云_logo6.png"></a>提供CDN/云储存服务</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/utils.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/main.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'twikoo-9gkusr5330416ede',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'twikoo-9gkusr5330416ede',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'eAr0DeReLqljfxB66UTeW7Dc-gzGzoHsz',
+      appKey: 'QtQxNqMWsCyRgID89dz0Sy97',
+      placeholder: '讨论一下？',
+      avatar: 'monsterid',
+      meta: 'nick,mail'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: true,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+      requiredFields: ["nick"],
+      visitor: true
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="https://cdn.jsdelivr.net/gh/thomitics/likiblaze.github.io@master/css/new.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/17cde96a.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '17cde96a',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (false) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="https://cdn.jsdelivr.net/gh/thomitics/blog@master/js/busuanzi.pure.mini.js"></script></div></body></html>
